@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：罗海先
+** 时间：2014-07-23 09:53:09
+** 描述：codemapdesc(数据字典)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="Codemapdesc" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="Codemapdesc" type="Comit.XJPublicServicePlatform.Web.Domain.Common.Codemapdesc, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="CodemapdescCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="Codemapdesc.AddCodemapdesc"/>
+      		<flushOnExecute statement="Codemapdesc.UpdateCodemapdesc"/>
+      		<flushOnExecute statement="Codemapdesc.DeleteCodemapdesc"/>
+      		<flushOnExecute statement="Codemapdesc.DeleteCodemapdescs"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="CodemapdescResult" class="Codemapdesc">
+			<result property="CodemapdescId" column="codemapdesc_id"/>    
+			<result property="Id" column="id"/>    
+			<result property="Fieldval" column="fieldval"/>    
+			<result property="Fielddesc" column="fielddesc"/>    
+			<result property="StateId" column="state_id"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		
+    	<!--修改-->
+         <update id="UpdateCodemapdesc" parameterClass="Codemapdesc">
+           UPDATE codemapdesc SET codemapdesc_id = #CodemapdescId#,fielddesc = #Fielddesc#,state_id = #StateId#  
+           WHERE id = #Id#
+fieldval = #Fieldval#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllCodemapdescBySql" resultMap="CodemapdescResult" parameterClass="string">
+           select * 
+           FROM codemapdesc
+           $whereSql$
+         </select>
+    	<!--获取多条-->
+    	<select id="GetCodemapdescs" resultMap="CodemapdescResult" parameterClass="Codemapdesc">
+      		select codemapdesc.codemapdesc_id,codemapdesc.id,codemapdesc.fieldval,codemapdesc.fielddesc,codemapdesc.state_id
+      		from codemapdesc
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindCodemapdescs" resultMap="CodemapdescResult" parameterClass="Hashtable">
+        	select codemapdesc.codemapdesc_id,codemapdesc.id,codemapdesc.fieldval,codemapdesc.fielddesc,codemapdesc.state_id
+        	from codemapdesc
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and codemapdesc.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteCodemapdesc" parameterClass="Codemapdesc">
+      		delete from codemapdesc
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteCodemapdescBySql" parameterClass="string">
+           DELETE FROM codemapdesc
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteCodemapdescs" parameterClass="List">
+      		delete from codemapdesc
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="CodemapdescId">
+					<isGreaterEqual property="CodemapdescId" compareValue="0" prepend="and">
+						codemapdesc.codemapdesc_id=#CodemapdescId#
+					</isGreaterEqual>
+				</isNotNull>		
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="CodemapdescId">
+					<isGreaterEqual property="CodemapdescId" compareValue="0" prepend="and">
+						codemapdesc.codemapdesc_id=#CodemapdescId#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="Id" prepend="and">
+					UPPER(codemapdesc.id)=UPPER(#Id#)
+				</isNotEmpty>	
+				<isNotEmpty property="Fieldval" prepend="and">
+					UPPER(codemapdesc.fieldval)=UPPER(#Fieldval#)
+				</isNotEmpty>	
+				<isNotEmpty property="Fielddesc" prepend="and">
+					UPPER(codemapdesc.fielddesc)=UPPER(#Fielddesc#)
+				</isNotEmpty>	
+				<isNotEmpty property="StateId" prepend="and">
+					UPPER(codemapdesc.state_id)=UPPER(#StateId#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

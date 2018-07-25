@@ -1,0 +1,200 @@
+﻿@helper Truncate(string input, int length)
+{
+    if (input.Length <= length)
+    {
+        @input
+    }
+    else
+    {
+        @input.Substring(0, length)<text>...</text>
+    }
+} 
+@{
+    ViewBag.Title = "留言管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/jquery-easyui-1.5.3/themes/default/easyui.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/themes/icon.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/demo/demo.css" rel="stylesheet" />
+<style type="text/css">
+    .datagrid td {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+    .datagrid table {
+        margin: 0;
+    }
+
+    .messager-window .panel-tool {
+        width: 18px;
+    }
+
+    .panel-htop .panel-tool {
+        width: 18px;
+    }
+</style>
+<h2>留言管理</h2>
+<div id="dlg">
+    <textarea maxlength="256" id="wordinfo"></textarea><br />
+    <input type="submit" id="tijiao" value="提交" />
+</div>
+<div id="dld"></div>
+<table id="dg"></table>
+<script src="~/Content/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="~/Content/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+    function rowdel(index) {
+        $('#dg').datagrid('selectRow', index);// 关键在这里
+        var row = $('#dg').datagrid('getSelected');
+        console.log(row);
+        if (row) {
+            //$.messager.alert('Warning', 'The warning message');
+            $.post("/MyWord/Delete", { id: row.MViewModel.MessageId }, function (data) {
+                if (data != 0) {
+                    $.messager.alert('提示', '删除成功！');
+                    $('#dg').datagrid('reload');
+                } else {
+                    $.messager.alert('提示', '删除失败！');
+                }
+            }, "json")
+        }
+    }
+    function rowedi(index) {
+        $('#dg').datagrid('selectRow', index);// 关键在这里
+        var row = $('#dg').datagrid('getSelected');
+        console.log(row);
+        if (row) {
+            $('#dlg').dialog('open').dialog('setTitle', '回复');
+            $('#wordinfo').val("");
+            //$('#fm').form('load', row);
+            //url = '${ctx}updateStudent.do?id=' + row.id;
+            document.getElementById("tijiao").onclick = function () {
+                var wordinfo = $('#wordinfo').val();
+                $.post("/WordManage/Reply", { id: row.MViewModel.MessageId, WordInfo: wordinfo }, function (data) {
+                    if (data != 0) {
+                        $('#dlg').dialog('close');
+                        $('#dg').datagrid('reload');
+                    } else {
+                        $.messager.alert('提示', '回复失败！');
+                    }
+                }, "json");
+            }
+        }
+    }
+    function rowope(index) {
+        $('#dg').datagrid('selectRow', index);// 关键在这里
+        var row = $('#dg').datagrid('getSelected');
+        console.log(row);
+        if (row) {
+            //$.messager.alert('Warning', 'The warning message');
+            $.post("/WordManage/Open", { id: row.MViewModel.MessageId }, function (data) {
+                if (data != 0) {
+                    $.messager.alert('提示', '公开成功！');
+                    $('#dg').datagrid('reload');
+                } else {
+                    $.messager.alert('提示', '公开失败！');
+                }
+            }, "json")
+        }
+    }
+    function rowdet(index) {
+        $('#dg').datagrid('selectRow', index);// 关键在这里
+        var row = $('#dg').datagrid('getSelected');
+        console.log(row);
+        if (row) {
+            $('#dld').html('<ol class="round" id = "yi"></ol>');
+
+            $('#dld').dialog('open').dialog('setTitle', '详情');
+            $('#yi').append('<li class="featured" id="yiin"></li>');
+            $('#yiin').html('<h5>' + row.MViewModel.UserName + '</h5>');
+            $('#yiin').append(row.MViewModel.MessageInfo + "<br />");
+            $('#yiin').append(row.MViewModel.MessageDatetime);
+            for (var i = 0; i < row.RViewModels.length;i++){
+                $('#yiin').append('<ol class="round" id="er' + i + '"></ol>');
+                $('#er' + i).append('<li id ="erin' + i + '"></li>');
+                $('#erin'+i).append('<hr />');
+                $('#erin'+i).append('<h5>' + row.RViewModels[i].UserName + '</h5>');
+                $('#erin'+i).append(row.RViewModels[i].ReplyInfo + '<br />');
+                $('#erin'+i).append(row.RViewModels[i].ReplyDatetime);
+            }
+        }
+    }
+    $('#dlg').dialog({
+        title: 'My Dialog',
+        width: 520,
+        height: 310,
+        closed: true,
+        cache: false,
+        //href: 'get_content.php',
+        modal: true
+    });
+    $('#dld').dialog({
+        title: 'My Dialog',
+        width: 520,
+        height: 310,
+        closed: true,
+        cache: false,
+        //href: 'get_content.php',
+        modal: true
+    });
+    $(document).ready(function () {
+        $('#dg').datagrid({
+            url: '/WordManage/GetDataList',
+            columns: [[
+                {
+                    field: 'UserName', title: '用户', width: 100, align: 'left', formatter: function (value, row, index) {
+                        if (row.MViewModel) {
+                            return row.MViewModel.UserName;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'MessageInfo', title: '内容', width: 300, align: 'left', formatter: function (value, row, index) {
+                        if (row.MViewModel) {
+                            return row.MViewModel.MessageInfo;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'MessageDatetime', title: '留言时间', width: 150, align: 'left', formatter: function (value, row, index) {
+                        if (row.MViewModel) {
+                            return row.MViewModel.MessageDatetime;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'MessageTag', title: '状态', width: 100, align: 'left', formatter: function (value, row, index) {
+                        if (row.MViewModel) {
+                            return row.MViewModel.MessageTag==1?"公开":"不公开";
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'MessageId', title: '操作', width: 200, align: 'left', formatter: function (value, row, index) {
+                        if (row) {
+                            return '<a href="javascript:;" onclick="rowdel(' + index + ')">删除</a>|<a href="javascript:;" onclick="rowedi(' + index + ')">回复</a>|<a href="javascript:;" onclick="rowope(' + index + ')">公开</a>|<a href="javascript:;" onclick="rowdet(' + index + ')">查看详情</a>';
+                        } else {
+                            return value;
+                        }
+                    }
+                }
+            ]],
+            width:850,
+            pagination: true,
+            singleSelect: true,
+            onClickRow: function (rowIndex, rowData) {
+                $(this).datagrid('unselectRow', rowIndex);
+            }
+        });
+    });
+</script>

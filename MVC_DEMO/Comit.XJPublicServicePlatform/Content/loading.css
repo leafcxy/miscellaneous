@@ -1,0 +1,22 @@
+.loadingDiv {
+	margin: 0;
+	padding: 0;
+	background: #333333;
+	width: 100%;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	border:0;
+	-moz-opacity: 0.5;
+	filter: alpha(opacity = 50);
+	z-index: 99;
+	height: 100%;
+}
+
+.loadingImg {
+	position: absolute;
+	margin-left: expression((document.body.clientWidth-75)/2);
+	margin-top:expression((document.body.clientHeight-100)/2);
+}

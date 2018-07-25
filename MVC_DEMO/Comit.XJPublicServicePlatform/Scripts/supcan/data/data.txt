@@ -1,0 +1,4 @@
+France	10248	VINET	2006-7-4	2006-8-1		"Com Test'c	5bc"	Reims	
+Germany	10249	TOMSP	2006-7-4	2006-8-16	11.6100	Toms Spezialitten	Munster	Luisenstr. 48
+Brazil	10250	HANAR	2006-7-4	2006-8-5	65.8300	Hanari Carnes	Rio de Janeiro	Rua do Pao, 67
+France	10251	VICTE	2006-7-4	2006-8-5	41.3400	Victuailles en stock	Lyon	2, rue du Commerce

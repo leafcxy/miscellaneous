@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="UserProfile" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="UserProfile" type="LeaveWord.Domain.user.UserProfile, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="UserProfileCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="UserProfile.AddUserProfile"/>
+      <flushOnExecute statement="UserProfile.UpdateUserProfile"/>
+      <flushOnExecute statement="UserProfile.DeleteUserProfile"/>
+      <flushOnExecute statement="UserProfile.DeleteUserProfiles"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="UserProfileResult" class="UserProfile">
+      <result property="UserId" column="UserId"/>
+      <result property="UserName" column="UserName"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--自定义-->
+    <select id="GetPageUsers" resultMap="UserProfileResult" parameterClass="Hashtable">
+      select top $pageSize$ * from
+      (select row_number()over(order by UserId)rownumber,* from UserProfile)a
+      where rownumber>($pageSize$ * ($pageNumber$ - 1))
+    </select>
+    <!--新增-->
+    <insert id="AddUserProfile" parameterClass="UserProfile">
+      INSERT INTO UserProfile (UserName)
+      VALUES ( #UserName#)
+
+      <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+      <selectKey resultClass="int" type="post" property="UserId">
+        SELECT @@IDENTITY AS value
+      </selectKey>
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateUserProfile" parameterClass="UserProfile">
+      UPDATE UserProfile SET UserName = #UserName#
+      WHERE UserId = #UserId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllUserProfileBySql" resultMap="UserProfileResult" parameterClass="string"  cacheModel="UserProfileCache">
+      SELECT UserId,UserName
+      FROM UserProfile
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetUserProfiles" resultMap="UserProfileResult" parameterClass="UserProfile" cacheModel="UserProfileCache">
+      select UserProfile.UserId,UserProfile.UserName
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetUserProfileCount" resultClass="int" parameterClass="string">
+      select COUNT(UserId)
+      from UserProfile
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindUserProfiles" resultMap="UserProfileResult" parameterClass="Hashtable" cacheModel="UserProfileCache">
+      select UserProfile.UserId,UserProfile.UserName
+      from UserProfile
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and UserProfile.UserId=#Extends[].UserId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteUserProfile" parameterClass="UserProfile">
+      DELETE FROM UserProfile
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteUserProfileBySql" parameterClass="string">
+      DELETE FROM UserProfile
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteUserProfiles" parameterClass="List">
+      DELETE FROM UserProfile
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="UserId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            UserProfile.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+
+        <isNotEmpty property="UserName" prepend="and">
+          UPPER(UserProfile.UserName)=UPPER(#UserName#)
+        </isNotEmpty>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

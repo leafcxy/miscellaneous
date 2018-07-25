@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：李鸿庭
+** 时间：2014-07-28 17:04:57
+** 描述：user_role_relate(用户和角色的关系)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="UserRoleRelate" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="UserRoleRelate" type="Comit.XJPublicServicePlatform.Web.Domain.Management.UserRoleRelate, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="UserRoleRelateCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="UserRoleRelate.AddUserRoleRelate"/>
+      		<flushOnExecute statement="UserRoleRelate.UpdateUserRoleRelate"/>
+      		<flushOnExecute statement="UserRoleRelate.DeleteUserRoleRelate"/>
+      		<flushOnExecute statement="UserRoleRelate.DeleteUserRoleRelates"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="UserRoleRelateResult" class="UserRoleRelate">
+			<result property="Id" column="id"/>    
+			<result property="UserCode" column="user_code"/>    
+			<result property="RoleId" column="role_id"/>    
+			<result property="UpdateTime" column="update_time"/>    
+			<result property="OperatePerson" column="operate_person"/>    
+			<result property="OperateTime" column="operate_time"/>    
+			<result property="OperateType" column="operate_type"/>    
+			<result property="BackUp1" column="back_up1"/>    
+			<result property="BackUp2" column="back_up2"/>    
+			<result property="BackUp3" column="back_up3"/>    
+			<result property="BackUp4" column="back_up4"/>    
+			<result property="BackUp5" column="back_up5"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddUserRoleRelate" parameterClass="UserRoleRelate">
+           INSERT INTO user_role_relate (user_code,role_id,update_time,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5) 
+           VALUES ( #UserCode#,#RoleId#,#UpdateTime#,#OperatePerson#,#OperateTime#,#OperateType#,#BackUp1#,#BackUp2#,#BackUp3#,#BackUp4#,#BackUp5#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                    <selectKey resultClass="long" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateUserRoleRelate" parameterClass="UserRoleRelate">
+           UPDATE user_role_relate SET user_code = #UserCode#,role_id = #RoleId#,update_time = #UpdateTime#,operate_person = #OperatePerson#,operate_time = #OperateTime#,operate_type = #OperateType#,back_up1 = #BackUp1#,back_up2 = #BackUp2#,back_up3 = #BackUp3#,back_up4 = #BackUp4#,back_up5 = #BackUp5#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllUserRoleRelateBySql" resultMap="UserRoleRelateResult" parameterClass="string"  cacheModel="UserRoleRelateCache">
+           SELECT id,user_code,role_id,update_time,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5  
+           FROM user_role_relate
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetUserRoleRelates" resultMap="UserRoleRelateResult" parameterClass="UserRoleRelate" cacheModel="UserRoleRelateCache">
+      		select user_role_relate.id,user_role_relate.user_code,user_role_relate.role_id,user_role_relate.update_time,user_role_relate.operate_person,user_role_relate.operate_time,user_role_relate.operate_type,user_role_relate.back_up1,user_role_relate.back_up2,user_role_relate.back_up3,user_role_relate.back_up4,user_role_relate.back_up5
+      		from user_role_relate
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindUserRoleRelates" resultMap="UserRoleRelateResult" parameterClass="Hashtable" cacheModel="UserRoleRelateCache">
+        	select user_role_relate.id,user_role_relate.user_code,user_role_relate.role_id,user_role_relate.update_time,user_role_relate.operate_person,user_role_relate.operate_time,user_role_relate.operate_type,user_role_relate.back_up1,user_role_relate.back_up2,user_role_relate.back_up3,user_role_relate.back_up4,user_role_relate.back_up5
+        	from user_role_relate
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and user_role_relate.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteUserRoleRelate" parameterClass="UserRoleRelate">
+      		UPDATE user_role_relate  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteUserRoleRelateBySql" parameterClass="string">
+           UPDATE user_role_relate  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteUserRoleRelates" parameterClass="List">
+      		UPDATE user_role_relate  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						user_role_relate.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="UpdateTime">
+					<!--同一天-->
+					<isNotEqual property="UpdateTime" compareValue="1900-01-01" prepend="and">
+						user_role_relate.update_time = #UpdateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						user_role_relate.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						user_role_relate.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="UserCode" prepend="and">
+					UPPER(user_role_relate.user_code)=UPPER(#UserCode#)
+				</isNotEmpty>	
+				<isNotEmpty property="RoleId" prepend="and">
+					UPPER(user_role_relate.role_id)=UPPER(#RoleId#)
+				</isNotEmpty>	
+				<isNotEmpty property="UpdateTime">
+					<!--同一天-->
+					<isNotEqual property="UpdateTime" compareValue="1900-01-01" prepend="and">
+						user_role_relate.update_time = #UpdateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperatePerson" prepend="and">
+					UPPER(user_role_relate.operate_person)=UPPER(#OperatePerson#)
+				</isNotEmpty>	
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						user_role_relate.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateType" prepend="and">
+					UPPER(user_role_relate.operate_type)=UPPER(#OperateType#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp1" prepend="and">
+					UPPER(user_role_relate.back_up1)=UPPER(#BackUp1#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp2" prepend="and">
+					UPPER(user_role_relate.back_up2)=UPPER(#BackUp2#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp3" prepend="and">
+					UPPER(user_role_relate.back_up3)=UPPER(#BackUp3#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp4" prepend="and">
+					UPPER(user_role_relate.back_up4)=UPPER(#BackUp4#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp5" prepend="and">
+					UPPER(user_role_relate.back_up5)=UPPER(#BackUp5#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

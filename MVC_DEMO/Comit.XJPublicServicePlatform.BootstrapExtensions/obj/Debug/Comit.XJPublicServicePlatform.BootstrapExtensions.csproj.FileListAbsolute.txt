@@ -1,0 +1,11 @@
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\Comit.XJPublicServicePlatform.BootstrapExtensions.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\Comit.XJPublicServicePlatform.BootstrapExtensions.pdb
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\System.Web.WebPages.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\System.Web.WebPages.Deployment.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\System.Web.WebPages.xml
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\System.Web.WebPages.Deployment.xml
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\zh-Hans\System.Web.WebPages.resources.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\bin\Debug\zh-Hans\System.Web.WebPages.Deployment.resources.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\obj\Debug\Comit.XJPublicServicePlatform.BootstrapExtensions.csprojResolveAssemblyReference.cache
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\obj\Debug\Comit.XJPublicServicePlatform.BootstrapExtensions.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.BootstrapExtensions\obj\Debug\Comit.XJPublicServicePlatform.BootstrapExtensions.pdb

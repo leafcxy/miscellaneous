@@ -1,0 +1,65 @@
+1、往页面上直接输出的值用这个方法进行处理:Encoder.JavaScriptEncode()
+页面加密：EncryptQueryString("")
+后台解密：Security.DecryptQueryString("")
+后台加密：Security.EncryptQueryString("")
+
+2、跳转统一用GoToUrl（）方法，参数必须为不加密
+
+3、controller公用且与数据库交互写了PageCommonService类
+
+4、controller公用不与数据库交互写了TeController类
+
+5、列表显示内容根据EXCEL配置，后续排序如EXCEL无配置则根据页面语句追加
+
+6、EXCEL配置列表主键id字段必须与控件参数PrimaryKey大小写匹配
+
+7、下拉框绑定使用说明：
+①根据数据字段获取绑定：
+参数1:字典id值； 参数2：页面对象字段名
+例子：GetSelectsInfo("船舶种类", ship.ShipType);
+②参数1：查询SQL；参数2：关联表字段；参数3：关联表显示字段；参数4：页面对象字段名。
+ViewBag.EnterId = GetSelectsKey("select * from corporation_info","id","cn_name",ship.EnterId.ToString());
+
+8、操作标识（operate_type）
+新增：Add
+修改：Update
+删除：Disuse
+
+9、选择时分控件:
+①在DIV的class追加input-group bootstrap-timepicker
+②文本的class为form-control input-group bootstrap-timepicker;
+String.Format的格式改为 t
+③增加控件方法:
+$("#显示文本的id").timepicker({
+        minuteStep: 1,
+        showSeconds: true,
+        showMeridian: false
+    }).next().on(ace.click_event, function () {
+        $(this).prev().focus();
+    });
+
+
+10、新增区域文件时需要配置webconfig 里增加一个节点
+<add namespace="BootstrapExtensions.Base" />
+
+11、列表配置为时间格式时必须配置格式，否则无法显示列表内容
+
+12、列表配置时 必须写上 ORDER BY   Id ASC
+
+13、对原ui框架的修改都需要加这个注释，包括css及js
+Project Custom BY 谁
+
+14、MYSQL 自定义链接查询，可使用参数查询数据库
+步骤：在SQLMAP连接配置 Allow User Variables=True;即可
+
+15、解决IE浏览器新窗口会话和Cookie不能共享的BUG
+在发布根目录新增文件名App_Browsers
+在该文件夹新增 *.browser 如 IE10.browser 加入下面内容即可实现共享
+<browsers> 
+<browser refID="Default"> 
+<capabilities><!-- To avoid wrong detections of e.g. IE10 --> 
+<capability name="cookies" value="true" /> 
+<capability name="ecmascriptversion" value="3.0" /> 
+</capabilities> 
+</browser> 
+</browsers>

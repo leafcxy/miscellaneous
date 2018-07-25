@@ -1,0 +1,133 @@
+﻿@{
+    ViewBag.Title = "用户管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/jquery-easyui-1.5.3/themes/default/easyui.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/themes/icon.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/demo/demo.css" rel="stylesheet" />
+<style type="text/css">
+    .datagrid td {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+    .datagrid table {
+        margin: 0;
+    }
+
+    .messager-window .panel-tool {
+        width: 18px;
+    }
+
+    .panel-htop .panel-tool {
+        width: 18px;
+    }
+</style>
+<h2>用户管理</h2>
+<table id="dg"></table>
+<script src="~/Content/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="~/Content/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+    function rowdel(index) {
+        $('#dg').datagrid('selectRow', index);// 关键在这里
+        var row = $('#dg').datagrid('getSelected');
+        console.log(row);
+        if (row) {
+            //$.messager.alert('Warning', 'The warning message');
+            $.post("/UserManage/Delete", { id: row.uid }, function (data) {
+                if (data != 0) {
+                    $.messager.alert('提示', '删除成功！');
+                    $('#dg').datagrid('reload');
+                } else {
+                    $.messager.alert('提示', '删除失败！');
+                }
+            }, "json")
+        }
+    }
+    $(document).ready(function () {
+        $('#dg').datagrid({
+            url: '/UserManage/GetPageUsers',
+            columns: [[
+                {
+                    field: 'UserName', title: '用户', width: 100, align: 'left', formatter: function (value, row, index) {
+                        if (row) {
+                            return row.uname;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'cDatetime', title: '创建时间', width: 150, align: 'left', formatter: function (value, row, index) {
+                        if (row) {
+                            return row.cdate;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'fDatetime', title: '最近登录失败', width: 150, align: 'left', formatter: function (value, row, index) {
+                        if (row) {
+                            return row.fdate;
+                        } else {
+                            return value;
+                        }
+                    }
+                },
+                {
+                    field: 'MessageId', title: '操作', width: 100, align: 'left', formatter: function (value, row, index) {
+                        if (row) {
+                            return '<a href="javascript:;" onclick="rowdel(' + index + ')">删除</a>';
+                        } else {
+                            return value;
+                        }
+                    }
+                }
+            ]],
+            width:600,
+            pagination: true,
+            singleSelect: true,
+            onClickRow: function (rowIndex, rowData) {
+                $(this).datagrid('unselectRow', rowIndex);
+            }
+        });
+    });
+</script>
+@*<table>
+    <tr>
+        <th>
+            用户名
+        </th>
+        <th>
+            注册时间
+        </th>
+        <th>
+            异常登录时间
+        </th>
+
+        <th></th>
+    </tr>*@
+
+    @*@foreach (string s in ViewBag.UserManage)
+    {
+        <tr>
+            <td>
+                @s
+            </td>
+            <td>
+                @WebSecurity.GetCreateDate(s)
+            </td>
+            <td>
+                @WebSecurity.GetLastPasswordFailureDate(s)
+            </td>
+
+            <td>
+                @Html.ActionLink("删除", "Delete", new { name = s })
+            </td>
+        </tr>
+    }*@
+    
+
+@*</table>*@

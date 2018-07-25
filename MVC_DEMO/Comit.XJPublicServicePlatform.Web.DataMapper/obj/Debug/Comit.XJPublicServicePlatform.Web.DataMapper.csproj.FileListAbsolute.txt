@@ -1,0 +1,8 @@
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\bin\Debug\Comit.XJPublicServicePlatform.Web.DataMapper.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\bin\Debug\Comit.XJPublicServicePlatform.Web.DataMapper.pdb
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\bin\Debug\IBatisNet.Common.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\bin\Debug\IBatisNet.Common.Logging.Log4Net.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\bin\Debug\IBatisNet.DataMapper.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\obj\Debug\Comit.XJPublicServicePlatform.Web.DataMapper.csprojResolveAssemblyReference.cache
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\obj\Debug\Comit.XJPublicServicePlatform.Web.DataMapper.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.DataMapper\obj\Debug\Comit.XJPublicServicePlatform.Web.DataMapper.pdb

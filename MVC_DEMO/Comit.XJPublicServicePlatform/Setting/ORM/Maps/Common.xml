@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Common" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+
+
+  <statements>
+
+    <!--根据selectSql语句获取单条记录的对象，该语句完全自定义-->
+    <select id="GetBySql" parameterClass="string" resultClass="Hashtable">
+      $selectSql$
+    </select>
+
+    <!--根据selectSql获取所有记录（未分页），该语句完全自定义-->
+    <select id="GetAllBySql" parameterClass="string" resultClass="Hashtable">
+      $selectSql$
+    </select>
+
+    <!--根据selectSql获取所有记录（未分页），该语句完全自定义-->
+    <select id="GetDataSetBySql" parameterClass="string" resultClass="Hashtable">
+      $selectSql$
+    </select>
+
+    <!--根据addSql语句执行修改操作，该语句完全自定义-->
+    <insert id="AddBySql" parameterClass="string">
+      $addSql$
+    </insert>
+
+    <!--根据updateSql语句执行修改操作，该语句完全自定义-->
+    <update id="UpdateBySql" parameterClass="string">
+      $updateSql$
+    </update>
+
+    <!--根据deleteSql语句执行删除操作，该语句完全自定义-->
+    <update id="DeleteBySql" parameterClass="string">
+      $deleteSql$
+    </update>
+
+  </statements>
+</sqlMap>
+

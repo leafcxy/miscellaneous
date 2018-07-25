@@ -1,0 +1,153 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Message" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="Message" type="LeaveWord.Domain.Message.Message, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="MessageCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="Message.AddMessage"/>
+      <flushOnExecute statement="Message.UpdateMessage"/>
+      <flushOnExecute statement="Message.DeleteMessage"/>
+      <flushOnExecute statement="Message.DeleteMessages"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="MessageResult" class="Message">
+      <result property="MessageId" column="MessageId"/>
+      <result property="UserId" column="UserId"/>
+      <result property="MessageInfo" column="MessageInfo"/>
+      <result property="MessageTag" column="MessageTag"/>
+      <result property="MessageDatetime" column="MessageDatetime"/>
+    </resultMap>
+    <!--<resultMap id="MessageViewModelResult" class="MessageViewModel">
+      <result property="MessageId" column="MessageId"/>
+      <result property="UserName" column="UserName"/>
+      <result property="MessageInfo" column="MessageInfo"/>
+      <result property="MessageTag" column="MessageTag"/>
+      <result property="MessageDatetime" column="MessageDatetime"/>
+    </resultMap>-->
+  </resultMaps>
+  <statements>
+    <!--自定义-->
+    <select id="GetPageMessages" resultMap="MessageResult" parameterClass="Hashtable">
+      select top $pageSize$ * from
+      (select row_number()over(order by MessageId)rownumber,* from Message where MessageTag = 1)a
+      where rownumber>($pageSize$ * ($pageNumber$ - 1))
+    </select>
+    <select id="GetPageMessagesByWords" resultMap="MessageResult" parameterClass="Hashtable">
+      select * from Message
+      where MessageInfo like '%' + #words# + '%'
+      order by MessageId desc
+    </select>
+    <select id="GetPageMessagesId" resultMap="MessageResult" parameterClass="Hashtable">
+      select top $pageSize$ * from
+      (select row_number()over(order by MessageId)rownumber,* from Message where UserId = $UserId$)a
+      where rownumber>($pageSize$ * ($pageNumber$ - 1))
+    </select>
+    <select id="GetAllPageMessages" resultMap="MessageResult" parameterClass="Hashtable">
+      select top $pageSize$ * from
+      (select row_number()over(order by MessageId)rownumber,* from Message)a
+      where rownumber>($pageSize$ * ($pageNumber$ - 1))
+    </select>
+    <!--新增-->
+    <insert id="AddMessage" parameterClass="Message">
+      INSERT INTO Message (UserId,MessageInfo,MessageTag,MessageDatetime)
+      VALUES (#UserId#,#MessageInfo#,#MessageTag#,#MessageDatetime#)
+
+      <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+      <selectKey resultClass="int" type="post" property="MessageId">
+        SELECT @@IDENTITY AS value
+      </selectKey>
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateMessage" parameterClass="Message">
+      UPDATE Message SET UserId = #UserId#,MessageInfo = #MessageInfo#,MessageTag = #MessageTag#,MessageDatetime = #MessageDatetime#
+      WHERE MessageId = #MessageId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllMessageBySql" resultMap="MessageResult" parameterClass="string"  cacheModel="MessageCache">
+      SELECT MessageId,UserId,MessageInfo,MessageTag,MessageDatetime
+      FROM Message
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetMessages" resultMap="MessageResult" parameterClass="Message" cacheModel="MessageCache">
+      select Message.MessageId,Message.UserId,Message.MessageInfo,Message.MessageTag,Message.MessageDatetime
+      from Message
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetMessageCount" resultClass="int" parameterClass="string">
+      select COUNT(MessageId)
+      from Message
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindMessages" resultMap="MessageResult" parameterClass="Hashtable" cacheModel="MessageCache">
+      select Message.MessageId,Message.UserId,Message.MessageInfo,Message.MessageTag,Message.MessageDatetime
+      from Message
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and Message.MessageId=#Extends[].MessageId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteMessage" parameterClass="Message">
+      DELETE FROM Message
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteMessageBySql" parameterClass="string">
+      DELETE FROM Message
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteMessages" parameterClass="List">
+      DELETE FROM Message
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="MessageId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotNull property="MessageId">
+          <isGreaterEqual property="MessageId" compareValue="0" prepend="and">
+            Message.MessageId=#MessageId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            Message.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotEmpty property="MessageInfo" prepend="and">
+          UPPER(Message.MessageInfo)=UPPER(#MessageInfo#)
+        </isNotEmpty>
+        <isNotNull property="MessageTag">
+          <isGreaterEqual property="MessageTag" compareValue="0" prepend="and">
+            Message.MessageTag=#MessageTag#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotEmpty property="MessageDatetime">
+          <!--同一天-->
+          <isNotEqual property="MessageDatetime" compareValue="1900-01-01" prepend="and">
+            Message.MessageDatetime = #MessageDatetime#
+          </isNotEqual>
+        </isNotEmpty>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

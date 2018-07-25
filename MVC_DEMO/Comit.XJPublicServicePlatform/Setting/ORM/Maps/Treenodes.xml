@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：李鸿庭
+** 时间：2014-08-06 09:09:09
+** 描述：TreeNodes(菜单节点)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="Treenodes" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="Treenodes" type="Comit.XJPublicServicePlatform.Web.Domain.Management.Treenodes, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="TreenodesCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="Treenodes.AddTreenodes"/>
+      		<flushOnExecute statement="Treenodes.UpdateTreenodes"/>
+      		<flushOnExecute statement="Treenodes.DeleteTreenodes"/>
+      		<flushOnExecute statement="Treenodes.DeleteTreenodess"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="TreenodesResult" class="Treenodes">
+			<result property="Id" column="id"/>    
+			<result property="PrivilegeId" column="privilege_id"/>    
+			<result property="NodeName" column="node_name"/>    
+			<result property="ParentId" column="parent_id"/>    
+			<result property="Url" column="url"/>    
+			<result property="AddUrl" column="add_url"/>    
+			<result property="DelUrl" column="del_url"/>    
+			<result property="SelUrl" column="sel_url"/>    
+			<result property="Window" column="window"/>    
+			<result property="Orderby" column="orderby"/>    
+			<result property="OperatePerson" column="operate_person"/>    
+			<result property="OperateTime" column="operate_time"/>    
+			<result property="OperateType" column="operate_type"/>    
+			<result property="BackUp1" column="back_up1"/>    
+			<result property="BackUp2" column="back_up2"/>    
+			<result property="BackUp3" column="back_up3"/>    
+			<result property="BackUp4" column="back_up4"/>    
+			<result property="BackUp5" column="back_up5"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddTreenodes" parameterClass="Treenodes">
+           INSERT INTO TreeNodes (privilege_id,node_name,parent_id,url,add_url,del_url,sel_url,window,orderby,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5) 
+           VALUES ( #PrivilegeId#,#NodeName#,#ParentId#,#Url#,#AddUrl#,#DelUrl#,#SelUrl#,#Window#,#Orderby#,#OperatePerson#,#OperateTime#,#OperateType#,#BackUp1#,#BackUp2#,#BackUp3#,#BackUp4#,#BackUp5#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                    <selectKey resultClass="long" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateTreenodes" parameterClass="Treenodes">
+           UPDATE TreeNodes SET privilege_id = #PrivilegeId#,node_name = #NodeName#,parent_id = #ParentId#,url = #Url#,add_url = #AddUrl#,del_url = #DelUrl#,sel_url = #SelUrl#,window = #Window#,orderby = #Orderby#,operate_person = #OperatePerson#,operate_time = #OperateTime#,operate_type = #OperateType#,back_up1 = #BackUp1#,back_up2 = #BackUp2#,back_up3 = #BackUp3#,back_up4 = #BackUp4#,back_up5 = #BackUp5#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllTreenodesBySql" resultMap="TreenodesResult" parameterClass="string"  cacheModel="TreenodesCache">
+           SELECT id,privilege_id,node_name,parent_id,url,add_url,del_url,sel_url,window,orderby,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5  
+           FROM TreeNodes
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetTreenodess" resultMap="TreenodesResult" parameterClass="Treenodes" cacheModel="TreenodesCache">
+      		select TreeNodes.id,TreeNodes.privilege_id,TreeNodes.node_name,TreeNodes.parent_id,TreeNodes.url,TreeNodes.add_url,TreeNodes.del_url,TreeNodes.sel_url,TreeNodes.window,TreeNodes.orderby,TreeNodes.operate_person,TreeNodes.operate_time,TreeNodes.operate_type,TreeNodes.back_up1,TreeNodes.back_up2,TreeNodes.back_up3,TreeNodes.back_up4,TreeNodes.back_up5
+      		from TreeNodes
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindTreenodess" resultMap="TreenodesResult" parameterClass="Hashtable" cacheModel="TreenodesCache">
+        	select TreeNodes.id,TreeNodes.privilege_id,TreeNodes.node_name,TreeNodes.parent_id,TreeNodes.url,TreeNodes.add_url,TreeNodes.del_url,TreeNodes.sel_url,TreeNodes.window,TreeNodes.orderby,TreeNodes.operate_person,TreeNodes.operate_time,TreeNodes.operate_type,TreeNodes.back_up1,TreeNodes.back_up2,TreeNodes.back_up3,TreeNodes.back_up4,TreeNodes.back_up5
+        	from TreeNodes
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and TreeNodes.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteTreenodes" parameterClass="Treenodes">
+      		UPDATE TreeNodes  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteTreenodesBySql" parameterClass="string">
+           UPDATE TreeNodes  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteTreenodess" parameterClass="List">
+      		UPDATE TreeNodes  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						TreeNodes.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="Orderby">
+					<isGreaterEqual property="Orderby" compareValue="0" prepend="and">
+						TreeNodes.orderby=#Orderby#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						TreeNodes.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						TreeNodes.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="PrivilegeId" prepend="and">
+					UPPER(TreeNodes.privilege_id)=UPPER(#PrivilegeId#)
+				</isNotEmpty>	
+				<isNotEmpty property="NodeName" prepend="and">
+					UPPER(TreeNodes.node_name)=UPPER(#NodeName#)
+				</isNotEmpty>	
+				<isNotEmpty property="ParentId" prepend="and">
+					UPPER(TreeNodes.parent_id)=UPPER(#ParentId#)
+				</isNotEmpty>	
+				<isNotEmpty property="Url" prepend="and">
+					UPPER(TreeNodes.url)=UPPER(#Url#)
+				</isNotEmpty>	
+				<isNotEmpty property="AddUrl" prepend="and">
+					UPPER(TreeNodes.add_url)=UPPER(#AddUrl#)
+				</isNotEmpty>	
+				<isNotEmpty property="DelUrl" prepend="and">
+					UPPER(TreeNodes.del_url)=UPPER(#DelUrl#)
+				</isNotEmpty>	
+				<isNotEmpty property="SelUrl" prepend="and">
+					UPPER(TreeNodes.sel_url)=UPPER(#SelUrl#)
+				</isNotEmpty>	
+				<isNotEmpty property="Window" prepend="and">
+					UPPER(TreeNodes.window)=UPPER(#Window#)
+				</isNotEmpty>	
+				<isNotNull property="Orderby">
+					<isGreaterEqual property="Orderby" compareValue="0" prepend="and">
+						TreeNodes.orderby=#Orderby#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="OperatePerson" prepend="and">
+					UPPER(TreeNodes.operate_person)=UPPER(#OperatePerson#)
+				</isNotEmpty>	
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						TreeNodes.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateType" prepend="and">
+					UPPER(TreeNodes.operate_type)=UPPER(#OperateType#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp1" prepend="and">
+					UPPER(TreeNodes.back_up1)=UPPER(#BackUp1#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp2" prepend="and">
+					UPPER(TreeNodes.back_up2)=UPPER(#BackUp2#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp3" prepend="and">
+					UPPER(TreeNodes.back_up3)=UPPER(#BackUp3#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp4" prepend="and">
+					UPPER(TreeNodes.back_up4)=UPPER(#BackUp4#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp5" prepend="and">
+					UPPER(TreeNodes.back_up5)=UPPER(#BackUp5#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

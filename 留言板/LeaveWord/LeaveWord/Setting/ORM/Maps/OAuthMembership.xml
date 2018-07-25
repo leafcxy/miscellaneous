@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="OAuthMembership" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="OAuthMembership" type="LeaveWord.Domain.user.OAuthMembership, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="OAuthMembershipCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="OAuthMembership.AddOAuthMembership"/>
+      <flushOnExecute statement="OAuthMembership.UpdateOAuthMembership"/>
+      <flushOnExecute statement="OAuthMembership.DeleteOAuthMembership"/>
+      <flushOnExecute statement="OAuthMembership.DeleteOAuthMemberships"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="OAuthMembershipResult" class="OAuthMembership">
+      <result property="Provider" column="Provider"/>
+      <result property="ProviderUserId" column="ProviderUserId"/>
+      <result property="UserId" column="UserId"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--新增-->
+    <insert id="AddOAuthMembership" parameterClass="OAuthMembership">
+      INSERT INTO webpages_OAuthMembership (Provider,ProviderUserId)
+      VALUES ( #Provider#,#ProviderUserId#)
+
+      <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+      <selectKey resultClass="int" type="post" property="UserId">
+        SELECT @@IDENTITY AS value
+      </selectKey>
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateOAuthMembership" parameterClass="OAuthMembership">
+      UPDATE webpages_OAuthMembership SET Provider = #Provider#,ProviderUserId = #ProviderUserId#
+      WHERE UserId = #UserId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllOAuthMembershipBySql" resultMap="OAuthMembershipResult" parameterClass="string"  cacheModel="OAuthMembershipCache">
+      SELECT Provider,ProviderUserId,UserId
+      FROM webpages_OAuthMembership
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetOAuthMemberships" resultMap="OAuthMembershipResult" parameterClass="OAuthMembership" cacheModel="OAuthMembershipCache">
+      select webpages_OAuthMembership.Provider,webpages_OAuthMembership.ProviderUserId,webpages_OAuthMembership.UserId
+      from webpages_OAuthMembership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetOAuthMembershipCount" resultClass="int" parameterClass="string">
+      select COUNT(UserId)
+      from webpages_OAuthMembership
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindOAuthMemberships" resultMap="OAuthMembershipResult" parameterClass="Hashtable" cacheModel="OAuthMembershipCache">
+      select webpages_OAuthMembership.Provider,webpages_OAuthMembership.ProviderUserId,webpages_OAuthMembership.UserId
+      from webpages_OAuthMembership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and webpages_OAuthMembership.UserId=#Extends[].UserId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteOAuthMembership" parameterClass="OAuthMembership">
+      DELETE FROM webpages_OAuthMembership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteOAuthMembershipBySql" parameterClass="string">
+      DELETE FROM webpages_OAuthMembership
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteOAuthMemberships" parameterClass="List">
+      DELETE FROM webpages_OAuthMembership
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="UserId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotEmpty property="Provider" prepend="and">
+          UPPER(webpages_OAuthMembership.Provider)=UPPER(#Provider#)
+        </isNotEmpty>
+        <isNotEmpty property="ProviderUserId" prepend="and">
+          UPPER(webpages_OAuthMembership.ProviderUserId)=UPPER(#ProviderUserId#)
+        </isNotEmpty>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            webpages_OAuthMembership.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

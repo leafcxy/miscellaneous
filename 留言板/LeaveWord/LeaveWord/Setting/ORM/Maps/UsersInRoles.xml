@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="UsersInRoles" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="UsersInRoles" type="LeaveWord.Domain.user.UsersInRoles, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="UsersInRolesCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="UsersInRoles.AddUsersInRoles"/>
+      <flushOnExecute statement="UsersInRoles.UpdateUsersInRoles"/>
+      <flushOnExecute statement="UsersInRoles.DeleteUsersInRoles"/>
+      <flushOnExecute statement="UsersInRoles.DeleteUsersInRoless"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="UsersInRolesResult" class="UsersInRoles">
+      <result property="UserId" column="UserId"/>
+      <result property="RoleId" column="RoleId"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--新增-->
+    <insert id="AddUsersInRoles" parameterClass="UsersInRoles">
+      INSERT INTO webpages_UsersInRoles (UserId,RoleId)
+      VALUES ( #UserId#,#RoleId#)
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateUsersInRoles" parameterClass="UsersInRoles">
+      UPDATE webpages_UsersInRoles SET RoleId = #RoleId#
+      WHERE UserId = #UserId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllUsersInRolesBySql" resultMap="UsersInRolesResult" parameterClass="string"  cacheModel="UsersInRolesCache">
+      SELECT UserId,RoleId
+      FROM webpages_UsersInRoles
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetUsersInRoless" resultMap="UsersInRolesResult" parameterClass="UsersInRoles" cacheModel="UsersInRolesCache">
+      select webpages_UsersInRoles.UserId,webpages_UsersInRoles.RoleId
+      from webpages_UsersInRoles
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetUsersInRolesCount" resultClass="int" parameterClass="string">
+      select COUNT(UserId)
+      from webpages_UsersInRoles
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindUsersInRoless" resultMap="UsersInRolesResult" parameterClass="Hashtable" cacheModel="UsersInRolesCache">
+      select webpages_UsersInRoles.UserId,webpages_UsersInRoles.RoleId
+      from webpages_UsersInRoles
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and webpages_UsersInRoles.UserId=#Extends[].UserId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteUsersInRoles" parameterClass="UsersInRoles">
+      DELETE FROM webpages_UsersInRoles
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteUsersInRolesBySql" parameterClass="string">
+      DELETE FROM webpages_UsersInRoles
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteUsersInRoless" parameterClass="List">
+      DELETE FROM webpages_UsersInRoles
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="UserId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            webpages_UsersInRoles.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotNull property="RoleId">
+          <isGreaterEqual property="RoleId" compareValue="0" prepend="and">
+            webpages_UsersInRoles.RoleId=#RoleId#
+          </isGreaterEqual>
+        </isNotNull>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

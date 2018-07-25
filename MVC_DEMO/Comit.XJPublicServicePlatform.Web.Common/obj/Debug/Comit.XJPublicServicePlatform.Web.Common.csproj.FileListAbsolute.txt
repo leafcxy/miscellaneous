@@ -1,0 +1,8 @@
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\bin\Debug\Comit.XJPublicServicePlatform.Web.Common.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\bin\Debug\Comit.XJPublicServicePlatform.Web.Common.pdb
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\bin\Debug\GetuiServerApiSDK.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\bin\Debug\Google.ProtocolBuffers.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\bin\Debug\log4net.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\obj\Debug\Comit.XJPublicServicePlatform.Web.Common.csprojResolveAssemblyReference.cache
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\obj\Debug\Comit.XJPublicServicePlatform.Web.Common.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Common\obj\Debug\Comit.XJPublicServicePlatform.Web.Common.pdb

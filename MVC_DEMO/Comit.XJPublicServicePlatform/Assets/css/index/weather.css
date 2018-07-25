@@ -1,0 +1,20 @@
+.weather
+{    margin:3px auto;
+	height:200px;
+	width:980px;
+    float:left;
+	}
+.weather_one
+{   float:left;
+	height:200px;
+	width:162px;
+	text-align:center;
+	}
+.weather_one p
+{
+	font-family:"ËÎÌו";
+	font-size:12px;
+	line-height:22px;
+    font-weight:400;
+}
+

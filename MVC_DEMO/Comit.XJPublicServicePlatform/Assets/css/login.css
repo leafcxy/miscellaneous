@@ -1,0 +1,70 @@
+﻿body {
+     margin:0px; 
+     padding:0px; 
+     background:url(/Assets/css/images/logging_02.gif) center repeat-x;
+     text-align:center;
+}
+img{ 
+    border:0px;
+}
+.IE6png{/*** 第二步：通过适当的选择器，让需要在IE6透明的图片或者需要背景图片透明的容器使用上“behavior: url("iepngfix.htc");” ***/
+behavior: url(/Js/iepngfix.htc);
+}
+#LoggingTop2{
+	width:100%;
+	height:187px;
+	background:transparent url(/Assets/css/images/loggingTop2.png) no-repeat;
+}
+#btnLogin{
+    background:url(/Assets/css/images/loggingButtonDL.png);
+    width:63px;
+    height:23px;
+    border:0px;
+}
+.DefaultDiv {
+    margin-left:17%;
+    margin-right:20%;
+    margin-top:10%;
+    vertical-align:middle;
+}
+.loggingLoad{ 
+    margin-top:15%;
+    margin-left:20%;
+}
+.loggingContent{ 
+    font-size:14px; 
+    font-weight:bold; 
+    color:#000; 
+    margin-bottom:10%; 
+    margin-left:-100px;
+}
+.loggingContent td{  
+    padding:3px 0px; 
+}
+.loggingContent input{ 
+    width:150px; 
+    background:url(/Assets/css/images/loggingInput.png) bottom repeat-x; 
+    border:solid 1px #A7A7A7
+}
+.loggingContent img{ 
+    margin-right:10px;
+}
+#LoggingBottom{
+	width:900px;
+	height:102px;
+	line-height:102px;
+	font-size:12px;
+	color:#FFF;
+	background:transparent url(/Assets/css/images/loggingBottom.png) no-repeat;
+}
+#LoggingMiddleL{
+	width:207px;
+	height:292px;
+	background:transparent url(/Assets/css/images/loggingMiddleL.png) no-repeat;
+}
+#LoggingMiddleR{
+	width:384px;
+	height:292px;
+    margin-left:207px;
+	background:transparent url(/Assets/css/images/loggingMiddleR.png) no-repeat;
+}

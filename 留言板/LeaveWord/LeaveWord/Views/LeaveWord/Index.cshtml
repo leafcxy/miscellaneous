@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "提交留言";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/jquery-easyui-1.5.3/themes/default/easyui.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/themes/icon.css" rel="stylesheet" />
+<link href="~/Content/jquery-easyui-1.5.3/demo/demo.css" rel="stylesheet" />
+<style type="text/css">
+    .messager-window .panel-tool{
+        width:18px;
+    }
+</style>
+<h2>提交留言</h2>
+<textarea maxlength="256" id="wordinfo"></textarea><br />
+<input type="submit" id="tijiao" value="提交" />
+<script src="~/Content/jquery-easyui-1.5.3/jquery.min.js"></script>
+<script src="~/Content/jquery-easyui-1.5.3/jquery.easyui.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#tijiao').click(function () {
+            var wordinfo = $('#wordinfo').val();
+            $.post("/LeaveWord/PostWords", { wordinfo: wordinfo }, function (data) {
+                console.log(data);
+                if (data != 0) {
+                    //window.alert("添加成功！");
+                    $.messager.alert('提示', '添加成功！');
+                    $('#wordinfo').val("");
+                } else {
+                    //window.alert("添加失败！");
+                    $.messager.alert('提示', '添加失败！');
+                    $('#wordinfo').val("");
+                }
+            }, "json")
+        });
+    });
+</script>

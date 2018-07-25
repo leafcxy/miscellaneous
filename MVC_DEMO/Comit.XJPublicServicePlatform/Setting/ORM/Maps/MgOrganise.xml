@@ -1,0 +1,177 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：李鸿庭
+** 时间：2014-07-28 10:20:28
+** 描述：mg_organise(角色信息)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="MgOrganise" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="MgOrganise" type="Comit.XJPublicServicePlatform.Web.Domain.Management.MgOrganise, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="MgOrganiseCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="MgOrganise.AddMgOrganise"/>
+      		<flushOnExecute statement="MgOrganise.UpdateMgOrganise"/>
+      		<flushOnExecute statement="MgOrganise.DeleteMgOrganise"/>
+      		<flushOnExecute statement="MgOrganise.DeleteMgOrganises"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="MgOrganiseResult" class="MgOrganise">
+			<result property="Id" column="id"/>    
+			<result property="RoleId" column="role_id"/>    
+			<result property="RoleName" column="role_name"/>    
+			<result property="UpdateTime" column="update_time"/>    
+			<result property="OperatePerson" column="operate_person"/>    
+			<result property="OperateTime" column="operate_time"/>    
+			<result property="OperateType" column="operate_type"/>    
+			<result property="RoleState" column="role_state"/>    
+			<result property="BackUp1" column="back_up1"/>    
+			<result property="BackUp2" column="back_up2"/>    
+			<result property="BackUp3" column="back_up3"/>    
+			<result property="BackUp4" column="back_up4"/>    
+			<result property="BackUp5" column="back_up5"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddMgOrganise" parameterClass="MgOrganise">
+           INSERT INTO mg_organise (role_id,role_name,update_time,operate_person,operate_time,operate_type,role_state,back_up1,back_up2,back_up3,back_up4,back_up5) 
+           VALUES ( #RoleId#,#RoleName#,#UpdateTime#,#OperatePerson#,#OperateTime#,#OperateType#,#RoleState#,#BackUp1#,#BackUp2#,#BackUp3#,#BackUp4#,#BackUp5#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                    <selectKey resultClass="long" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateMgOrganise" parameterClass="MgOrganise">
+           UPDATE mg_organise SET role_id = #RoleId#,role_name = #RoleName#,update_time = #UpdateTime#,operate_person = #OperatePerson#,operate_time = #OperateTime#,operate_type = #OperateType#,role_state = #RoleState#,back_up1 = #BackUp1#,back_up2 = #BackUp2#,back_up3 = #BackUp3#,back_up4 = #BackUp4#,back_up5 = #BackUp5#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllMgOrganiseBySql" resultMap="MgOrganiseResult" parameterClass="string"  cacheModel="MgOrganiseCache">
+           SELECT id,role_id,role_name,update_time,operate_person,operate_time,operate_type,role_state,back_up1,back_up2,back_up3,back_up4,back_up5  
+           FROM mg_organise
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetMgOrganises" resultMap="MgOrganiseResult" parameterClass="MgOrganise" cacheModel="MgOrganiseCache">
+      		select mg_organise.id,mg_organise.role_id,mg_organise.role_name,mg_organise.update_time,mg_organise.operate_person,mg_organise.operate_time,mg_organise.operate_type,mg_organise.role_state,mg_organise.back_up1,mg_organise.back_up2,mg_organise.back_up3,mg_organise.back_up4,mg_organise.back_up5
+      		from mg_organise
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindMgOrganises" resultMap="MgOrganiseResult" parameterClass="Hashtable" cacheModel="MgOrganiseCache">
+        	select mg_organise.id,mg_organise.role_id,mg_organise.role_name,mg_organise.update_time,mg_organise.operate_person,mg_organise.operate_time,mg_organise.operate_type,mg_organise.role_state,mg_organise.back_up1,mg_organise.back_up2,mg_organise.back_up3,mg_organise.back_up4,mg_organise.back_up5
+        	from mg_organise
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and mg_organise.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteMgOrganise" parameterClass="MgOrganise">
+      		UPDATE mg_organise  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteMgOrganiseBySql" parameterClass="string">
+           UPDATE mg_organise  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteMgOrganises" parameterClass="List">
+      		UPDATE mg_organise  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						mg_organise.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="UpdateTime">
+					<!--同一天-->
+					<isNotEqual property="UpdateTime" compareValue="1900-01-01" prepend="and">
+						mg_organise.update_time = #UpdateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						mg_organise.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						mg_organise.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="RoleId" prepend="and">
+					UPPER(mg_organise.role_id)=UPPER(#RoleId#)
+				</isNotEmpty>	
+				<isNotEmpty property="RoleName" prepend="and">
+					UPPER(mg_organise.role_name)=UPPER(#RoleName#)
+				</isNotEmpty>	
+				<isNotEmpty property="UpdateTime">
+					<!--同一天-->
+					<isNotEqual property="UpdateTime" compareValue="1900-01-01" prepend="and">
+						mg_organise.update_time = #UpdateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperatePerson" prepend="and">
+					UPPER(mg_organise.operate_person)=UPPER(#OperatePerson#)
+				</isNotEmpty>	
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						mg_organise.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateType" prepend="and">
+					UPPER(mg_organise.operate_type)=UPPER(#OperateType#)
+				</isNotEmpty>	
+				<isNotEmpty property="RoleState" prepend="and">
+					UPPER(mg_organise.role_state)=UPPER(#RoleState#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp1" prepend="and">
+					UPPER(mg_organise.back_up1)=UPPER(#BackUp1#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp2" prepend="and">
+					UPPER(mg_organise.back_up2)=UPPER(#BackUp2#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp3" prepend="and">
+					UPPER(mg_organise.back_up3)=UPPER(#BackUp3#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp4" prepend="and">
+					UPPER(mg_organise.back_up4)=UPPER(#BackUp4#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp5" prepend="and">
+					UPPER(mg_organise.back_up5)=UPPER(#BackUp5#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

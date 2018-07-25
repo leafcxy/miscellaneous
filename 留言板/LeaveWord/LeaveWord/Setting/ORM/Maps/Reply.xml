@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Reply" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="Reply" type="LeaveWord.Domain.reply.Reply, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="ReplyCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="Reply.AddReply"/>
+      <flushOnExecute statement="Reply.UpdateReply"/>
+      <flushOnExecute statement="Reply.DeleteReply"/>
+      <flushOnExecute statement="Reply.DeleteReplys"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="ReplyResult" class="Reply">
+      <result property="ReplyId" column="ReplyId"/>
+      <result property="MessageId" column="MessageId"/>
+      <result property="UserId" column="UserId"/>
+      <result property="ReplyInfo" column="ReplyInfo"/>
+      <result property="ReplyDatetime" column="ReplyDatetime"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--新增-->
+    <insert id="AddReply" parameterClass="Reply">
+      INSERT INTO Reply (MessageId,UserId,ReplyInfo,ReplyDatetime)
+      VALUES ( #MessageId#,#UserId#,#ReplyInfo#,#ReplyDatetime#)
+
+      <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+      <selectKey resultClass="int" type="post" property="ReplyId">
+        SELECT @@IDENTITY AS value
+      </selectKey>
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateReply" parameterClass="Reply">
+      UPDATE Reply SET MessageId = #MessageId#,UserId = #UserId#,ReplyInfo = #ReplyInfo#,ReplyDatetime = #ReplyDatetime#
+      WHERE ReplyId = #ReplyId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllReplyBySql" resultMap="ReplyResult" parameterClass="string"  cacheModel="ReplyCache">
+      SELECT ReplyId,MessageId,UserId,ReplyInfo,ReplyDatetime
+      FROM Reply
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetReplys" resultMap="ReplyResult" parameterClass="Reply" cacheModel="ReplyCache">
+      select Reply.ReplyId,Reply.MessageId,Reply.UserId,Reply.ReplyInfo,Reply.ReplyDatetime
+      from Reply
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetReplyCount" resultClass="int" parameterClass="string">
+      select COUNT(ReplyId)
+      from Reply
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindReplys" resultMap="ReplyResult" parameterClass="Hashtable" cacheModel="ReplyCache">
+      select Reply.ReplyId,Reply.MessageId,Reply.UserId,Reply.ReplyInfo,Reply.ReplyDatetime
+      from Reply
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and Reply.ReplyId=#Extends[].ReplyId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteReply" parameterClass="Reply">
+      DELETE FROM Reply
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteReplyBySql" parameterClass="string">
+      DELETE FROM Reply
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteReplys" parameterClass="List">
+      DELETE FROM Reply
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="ReplyId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotNull property="ReplyId">
+          <isGreaterEqual property="ReplyId" compareValue="0" prepend="and">
+            Reply.ReplyId=#ReplyId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotNull property="MessageId">
+          <isGreaterEqual property="MessageId" compareValue="0" prepend="and">
+            Reply.MessageId=#MessageId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            Reply.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+
+        <isNotEmpty property="ReplyInfo" prepend="and">
+          UPPER(Reply.ReplyInfo)=UPPER(#ReplyInfo#)
+        </isNotEmpty>
+
+        <isNotEmpty property="ReplyDatetime">
+          <!--同一天-->
+          <isNotEqual property="ReplyDatetime" compareValue="1900-01-01" prepend="and">
+            Reply.ReplyDatetime = #ReplyDatetime#
+          </isNotEqual>
+        </isNotEmpty>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

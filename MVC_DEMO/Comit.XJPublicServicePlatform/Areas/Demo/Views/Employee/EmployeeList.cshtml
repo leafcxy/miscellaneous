@@ -1,0 +1,49 @@
+﻿@*
+    ** 作者：张权
+    ** 时间：2016-05-26 10:15:46
+    ** employee(员工信息)表的Edit.aspx(自动生成 )
+*@
+@using Microsoft.Security.Application
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" style="background-color: white;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>  
+</head>
+<body>
+    <!--页面导航-->
+    <form id="form1">
+        @Html.Raw(@ViewBag.StrNavigation)
+        <div class="page-content" style="padding-top:20px">
+            <div class="row">
+                <div class="col-xs-12">
+                    @{ Html.RenderAction("DataGrid", "DataList", new { area = "Common", QueryId = "employee", PrimaryKey = "id", SonSQL = " AND operate_type <> 'Disuse'", OrderSQL = "order by Id ASC", ActionDirect = "right", Title = @ViewBag.Title, IsShowDelete = @ViewBag.DelType, IsShowAdd = @ViewBag.AddType, TreeId = @ViewBag.TreeId, IsShowSelect = true, IsShowView = true, AddBtnRedirect = "EmployeeDetail", IsShowPager = true, Height = 500, DefaultPageCount = 10 }); }
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.page-content -->
+    </form>
+</body>
+
+</html>
+<script>
+    //子页面控制父页面iframe自适应高度
+    function resizeMain(height) {
+        //现控件需要动态增加的高度
+        var oldformHeight = $("#formHeight").val();
+        //上一个控件动态增加的高度，需减去
+        var formHeight = $("body").find("form").height();
+        //动态更改页面高度
+        $("body").find("form").height(formHeight + height - oldformHeight)
+        //父页面ifram自适应高度
+        setTimeout("$(top).resize()", "100");
+        //保存此次动态适应的高度
+        $("#formHeight").val(height);
+    }
+</script>

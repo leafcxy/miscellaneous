@@ -1,0 +1,638 @@
+﻿@model System.Data.DataTable
+@{
+    Layout = null;
+}
+
+<!-- PAGE CONTENT BEGINS -->
+@{
+    Comit.XJPublicServicePlatform.Web.Domain.Common.PartialViewParameter PVP = ViewData["PVP"] as Comit.XJPublicServicePlatform.Web.Domain.Common.PartialViewParameter;
+}
+
+<link rel="stylesheet" href="/assets/css/ui.jqgrid.css" />
+<!--[if IE 7]>
+          <link rel="stylesheet" href="@Url.Content("~/Assets/css/font-awesome-ie7.min.css")" />
+        <![endif]-->
+@Styles.Render("~/Content/css")
+<!--[if lte IE 8]>
+      <link rel="stylesheet" href="@Url.Content("~/Assets/css/ace-ie.min.css")" />
+    <![endif]-->
+<script src="/assets/js/ace-extra.min.js"></script>
+@Scripts.Render("~/bundles/modernizr")
+<!--[if lt IE 9]>
+@Scripts.Render("~/bundles/iecustom")
+    <![endif]-->
+
+
+<div id="multipleSearchDialog" style="margin-bottom:10px;">
+    @if (PVP.IsShowSearch)
+    {
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-3 co div-padding">
+                查询：<select style="width:150px;" class="searchField">
+                    @foreach (System.Data.DataRow dr in Model.Rows)
+                    {
+                        if (Convert.ToString(dr["Is_SelItem"]) == "1")
+                        {
+                            <option value="@dr["Field_Code"]">@dr["Field_Name"]</option>
+                        }
+                    }
+                </select>&nbsp;&nbsp;
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-2 div-padding">
+                条&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件：
+                <select id="searchOper" class="searchOper">
+                    <option value="cn" selected="selected">含有</option>
+                    <option value="eq">等于</option>
+                    <option value="ne">不等于</option>
+                    <option value="bt">大于</option>
+                    <option value="lt">小于</option>
+                    @*<option value="bw">开头</option>
+                        <option value="bn">非开头</option>
+                        <option value="ew">结束</option>
+                        <option value="en">非结束</option>
+                        <option value="nc">不含有</option>
+                        <option value="in">存在于</option>
+                        <option value="ni">不存在于</option>*@
+                </select>&nbsp;&nbsp;
+            </div>
+            <div class="col-xs-12 col-sm-4 col-md-3 div-padding">
+                查&nbsp;&nbsp;询&nbsp;&nbsp;值：<input type="text" class="searchString" id="searchString" placeholder="输入查询值" />&nbsp;&nbsp;
+            </div>
+            <span class="input-group-btn">
+                <button type="button" id="directSearch" class="btn btn-info">
+                    直接查询
+                    <i class="icon-search icon-on-right bigger-110"></i>
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" id="resultSearch" class="btn btn-info">
+                    在结果中查询
+                    <i class="icon-search icon-on-right bigger-110"></i>
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" id="btnExportExcel" class="btn btn-info">导出Excel</button>
+            </span>
+        </div>
+    }
+</div>
+
+<table id="grid-table"></table>
+
+@if (PVP.IsShowPager)
+{
+    <div id="grid-pager"></div>
+}
+
+<!-- basic scripts -->
+<!--[if !IE]> -->
+<!-- <![endif]-->
+<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='/assets/js/jquery-1.10.2.min.js'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='/assets/js/jquery-2.0.3.min.js'>" + "<" + "/script>");
+</script>
+<script type="text/javascript">
+    if ("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+</script>
+
+<!--[if IE 8]>
+<script type="text/javascript">
+    $(function(){
+        $(".div-padding").css("display","inline");
+        $(".div-padding").css("float","none");
+        $(".input-group-btn").css("display","inline");
+        $(".input-group-btn").css("float","none");
+    })
+</script>
+<![endif]-->
+@Scripts.Render("~/bundles/jqGrid")
+<script type="text/javascript">
+	@{
+		Comit.XJPublicServicePlatform.Web.Common.JsonHelper helper = new Comit.XJPublicServicePlatform.Web.Common.JsonHelper();
+		string JsonField = helper.GetJSONString(Model);
+		System.Data.DataTable DtQDef = ViewData["DtQDef"] as System.Data.DataTable;
+	}
+    var selId;
+
+    $.extend($.fn.fmatter, {
+        actionFormatter: function(cellvalue, options, rowObject) {
+            var retVal = "";
+            @if(!string.IsNullOrEmpty(PVP.CustomAction))
+			{
+				string[] CustomActionArr = PVP.CustomAction.Split(',');
+				for (int i = 0; i < CustomActionArr.Length; i++)
+				{
+					if (CustomActionArr[i] == "logo")
+					{
+						@:retVal += "<div style=\"margin-left:8px;\"><div title=\"\" style=\"float:left;cursor:pointer;\" class=\"ui-pg-div ui-inline-edit\" id=\"jEditButton_19\" onclick=\"location.href='@Html.Encode(PVP.CustomAction.Split(',')[i+2])?id=' + $(this).parent().parent().parent().attr('id')\" onmouseover=\"jQuery(this).addClass('ui-state-hover');\" onmouseout=\"jQuery(this).removeClass('ui-state-hover');\"><span class=\"ui-icon @(PVP.CustomAction.Split(',')[i+1])\"></span></div></div>&nbsp;";
+            					}
+					else if (CustomActionArr[i] == "word")
+					{
+						@:retVal += "<div style=\"margin-left:8px;\"><div title=\"\" style=\"float:left;cursor:pointer;\" class=\"ui-pg-div ui-inline-edit\" id=\"jEditButton_19\" onclick=\"location.href='@Html.Encode(PVP.CustomAction.Split(',')[i+2])?id=' + $(this).parent().parent().parent().attr('id')\" onmouseover=\"jQuery(this).addClass('ui-state-hover');\" onmouseout=\"jQuery(this).removeClass('ui-state-hover');\"><span style=\"color:#478fca\">@(PVP.CustomAction.Split(',')[i+1])</span></div></div>&nbsp;";
+            					}
+					else
+					{
+
+					}
+					i = i + 2;
+				}
+			}
+            return retVal;
+        }
+    } );
+
+    jQuery(function ($) {
+        document.onkeydown = function(e){
+            var ev = document.all ? window.event : e;
+            if(ev.keyCode==13) {
+                $("#directSearch").click();
+            }
+        }
+
+        $(window).resize(function(){　　
+            $("#grid-table").setGridWidth($(window).width() - $(".nav-list").width() - $(window).width()*0.02);　　
+        });　
+
+        var rules = "";
+
+        //点击导出Excel
+        $("#btnExportExcel").click(function(){
+            var postData = $("#grid-table").jqGrid("getGridParam", "postData");
+            var page = jQuery('#grid-table').jqGrid('getGridParam','page');
+            var totalCount = $("#grid-table").getGridParam("records");  //导出的总行数
+            var rows = postData.rows;
+            var sord = postData.sord;
+            var filters = postData.filters;
+            var query_id = "@(PVP.QueryId)";
+            var SonS = "@(PVP.SonSQL)";
+            var OrderS = "@(PVP.OrderSQL)";
+            var GridTitle = "@(PVP.Title)";
+			if(!filters)
+			{
+				filters = "";
+			}
+
+			//LoadingUtils.GoToUrl("/Common/DataList/ExportExcel?page=" + page + "&rows=" + rows + "&sord=" + sord + "&filters=" + filters + "&query_id=" + DecryptQueryString(query_id) + "&SonS=" + DecryptQueryString(SonS) + "&OrderS=" + DecryptQueryString(OrderS) + "&GridTitle=" + GridTitle);
+			window.location.href ="/Common/DataList/ExportExcel?page=" + EncryptQueryString(page) + "&rows=" +  EncryptQueryString(totalCount) + "&sord=" + EncryptQueryString(sord) + "&filters=" + EncryptQueryString(filters) + "&query_id=" + query_id + "&SonS=" + SonS + "&OrderS=" + OrderS + "&GridTitle=" + EncryptQueryString(GridTitle);
+		});
+
+		$("#btnAdd").click(function(){
+			LoadingUtils.GoToUrl("@(PVP.AddBtnRedirect)","@PVP.TreeId");
+        })
+
+        $("#directSearch").click(function () {
+            rules = "";
+            $("#multipleSearchDialog").each(function (i) {		//(1)从multipleSearchDialog对话框中找到各个查询条件行
+                var searchField = $(".searchField").val();    //(2)获得查询字段
+                var searchOper = $(".searchOper").val();		//(3)获得查询方式
+                var searchString = $(".searchString").val();  //(4)获得查询值
+
+                if (searchField && searchOper && searchString) {	//(5)如果三者皆有值且长度大于0，则将查询条件加入rules字符串
+                    rules += ',{"field":"' + searchField + '","op":"' + searchOper + '","data":"' + searchString + '"}';
+                }
+            });
+
+            if (rules) {						//(6)如果rules不为空，且长度大于0，则去掉开头的逗号
+                rules = rules.substring(1);
+            }
+
+            filtersStr = '{"groupOp":"AND","rules":[' + rules + ']}';  //(7)串联好filtersStr字符串
+            var postData = $("#grid-table").jqGrid("getGridParam", "postData");
+            $.extend(postData, { filters: filtersStr });   //(8)将filters参数串加入postData选项
+            $.extend(postData, { query_id: "@(PVP.QueryId)",SonS: "@(PVP.SonSQL)",OrderS: "@(PVP.OrderSQL)" });
+            $("#grid-table").jqGrid("setGridParam", {
+                search: true			//(9)将jqGrid的search选项设为true
+            }).trigger("reloadGrid", [{ page: 1 }]);				//重新加载Gril
+        })
+
+        $("#resultSearch").click(function () {
+            var sub = 0;
+            $("#multipleSearchDialog").each(function (i) {			//(1)从multipleSearchDialog对话框中找到各个查询条件行
+                var searchField = $(".searchField").val();    //(2)获得查询字段
+                var searchOper = $(".searchOper").val();		//(3)获得查询方式
+                var searchString = $(".searchString").val();  //(4)获得查询值
+                if (!rules) {					//(6)如果rules不为空，且长度大于0，则去掉开头的逗号
+                    sub = 1;
+                }
+                if (searchField && searchOper && searchString) {	//(5)如果三者皆有值且长度大于0，则将查询条件加入rules字符串
+                    rules += ',{"field":"' + searchField + '","op":"' + searchOper + '","data":"' + searchString + '"}';
+                }
+            });
+
+            if (sub == 1) {
+                rules = rules.substring(1);
+            }
+
+            filtersStr = '{"groupOp":"AND","rules":[' + rules + ']}';	//(7)串联好filtersStr字符串
+            var postData = $("#grid-table").jqGrid("getGridParam", "postData");
+            $.extend(postData, { filters: filtersStr });  //(8)将filters参数串加入postData选项
+            $.extend(postData, { query_id: "@(PVP.QueryId)",SonS: "@(PVP.SonSQL)",OrderS: "@(PVP.OrderSQL)" });
+
+            $("#grid-table").jqGrid("setGridParam", {
+                search: true			//(9)将jqGrid的search选项设为true
+            }).trigger("reloadGrid", [{ page: 1 }]);				//重新加载Gril
+        })
+
+        $("#changeSearch").click(function () {
+            rules = "";
+            $("#multipleSearchDialog").each(function (i) {		//(1)从multipleSearchDialog对话框中找到各个查询条件行
+                var searchField = $(".searchField").val();    //(2)获得查询港口字段
+                var searchOper = "cn";		//(3)获得查询方式
+                if($(".searchField").find("option:selected").text() == "海安港区")
+                    var searchString = "海安";
+                else if($(".searchField").find("option:selected").text() == "海安旧港")
+                    var searchString = "海安港";
+                else
+                    var searchString = $(".searchField").find("option:selected").text();  //(4)获得查询值
+
+                var searchField1 = "a.across_buoy";    //(2)获得查询实际出港日期字段
+                var searchOper1 = "cn";		//(3)获得查询方式
+                var searchString1 = $("#searchString").val();  //(4)获得查询日期值
+
+                if (searchField && searchOper && searchString) {	//(5)如果三者皆有值且长度大于0，则将查询条件加入rules字符串
+                    rules += ',{"field":"' + searchField + '","op":"' + searchOper + '","data":"' + searchString + '"}';
+                    rules += ',{"field":"' + searchField1 + '","op":"' + searchOper1 + '","data":"' + searchString1 + '"}';
+                }
+            });
+
+            if (rules) {						//(6)如果rules不为空，且长度大于0，则去掉开头的逗号
+                rules = rules.substring(1);
+            }
+
+            filtersStr = '{"groupOp":"AND","rules":[' + rules + ']}';  //(7)串联好filtersStr字符串
+            var postData = $("#grid-table").jqGrid("getGridParam", "postData");
+            $.extend(postData, { filters: filtersStr });   //(8)将filters参数串加入postData选项
+            $.extend(postData, { query_id: "@(PVP.QueryId)",SonS: "@(PVP.SonSQL)",OrderS: "@(PVP.OrderSQL)" });
+            $("#grid-table").jqGrid("setGridParam", {
+                search: true			//(9)将jqGrid的search选项设为true
+            }).trigger("reloadGrid", [{ page: 1 }]);				//重新加载Gril
+        })
+
+        var grid_selector = "#grid-table";
+        var pager_selector = "#grid-pager";
+
+        filtersStr = '{"groupOp":"AND","rules":[' + rules + ']}';	 //(7)串联好filtersStr字符串
+        var postData = $("#grid-table").jqGrid("getGridParam", "postData");
+        $.extend(postData, { filters: filtersStr });   //(8)将filters参数串加入postData选项
+
+        jQuery(grid_selector).jqGrid({
+            postData: { query_id: "@(PVP.QueryId)",SonS: "@(PVP.SonSQL)",OrderS: "@(PVP.OrderSQL)" },
+            url: '/Common/DataList/GetList',
+            datatype: "json",
+            cellLayout:0,
+            height: "@(PVP.Height)",
+            @{
+				string ColumnTop = "colNames: [";
+				if(PVP.ActionDirect == "left")
+				{
+					ColumnTop += "'操作',";
+				}
+				foreach(System.Data.DataRow dr in Model.Rows)
+				{
+					if(Convert.ToString(dr["Is_Show"]) == "1")
+					{
+						ColumnTop += "'" + Convert.ToString(dr["Field_Name"]) + "',";
+					}
+				}
+				if (PVP.ActionDirect == "right")
+				{
+					ColumnTop += "'操作'";
+				}
+				ColumnTop = ColumnTop.Trim(',');
+				ColumnTop += "],";
+			}
+            @Html.Raw(ColumnTop)
+            colModel: [
+				@{
+					string Row = "";
+					foreach(System.Data.DataRow dr in Model.Rows)
+					{
+						if(Convert.ToString(dr["Is_Show"]) == "1")
+						{
+							switch (Convert.ToString(dr["Data_Type"]))
+							{
+								case "datetime":
+									Row += "{ name: '" + dr["Field_Code"] + "', index: '" + dr["Field_Code"] + "', width: " + dr["Width"] + ", formatter:\"date\", " + dr["Formatter"] + ", sortable: true, editable: false },";
+									break;
+								case "bit":
+									Row += "{ name: '" + dr["Field_Code"] + "', index: '" + dr["Field_Code"] + "', width: " + dr["Width"] + ", formatter: \"select\"," + dr["Formatter"] + " ,sortable: true, editable: false },";
+									break;
+								default:
+									Row += "{ name: '" + dr["Field_Code"] + "', index: '" + dr["Field_Code"] + "', width: " + dr["Width"] + ", sortable: true, editable: false },";
+									break;
+							}
+						}
+					}
+					Row = Row.Trim(',');
+				}
+
+				@if(PVP.ActionDirect == "right" || PVP.ActionDirect == "")
+				{
+					@Html.Raw(Row)
+					@:,
+				}
+				{
+				    name: 'myac', index: '', width: 80, fixed: true, sortable: false, resize: false,
+				    formatter: 'actions',
+				    formatoptions: {
+				        keys: true,
+				        delbutton:@PVP.IsShowDelete.ToString().ToLower(),
+				        delOptions: { recreateForm: true, beforeShowForm: beforeDeleteCallback },
+				        editbutton:@PVP.IsShowView.ToString().ToLower(),
+				        editformbutton: @PVP.IsShowView.ToString().ToLower(),
+				        editOptions: {
+				            beforeShowForm: function (formid) {
+				                //var rowid = $("#grid-table").getGridParam("selrow");
+				                //获取行号，用数据库的编辑地址去拼接行号
+				                var editPath = "@(DtQDef.Rows[0]["edit_path"])?id=" + selId;
+				                if ($("#editmodgrid-table")) {
+				                    $("#editmodgrid-table").remove();
+				                }
+				                LoadingUtils.GoToUrl(editPath,"@PVP.TreeId");
+				            }
+				        }
+				    }
+				    @if(!string.IsNullOrEmpty(PVP.CustomAction))
+					{
+						@:,formatter:"actionFormatter"
+				    																									}
+				},
+				@if(PVP.ActionDirect == "left")
+				{
+					@Html.Raw(Row)
+				}
+            ],
+
+            cellEdit: false,
+            viewrecords: true,
+            rowNum: @PVP.DefaultPageCount,	//默认显示多少条
+            jsonReader: {
+                id: "@PVP.PrimaryKey",	//设置主键(要修改麻烦通知我一下-cj)
+                root: "griddata",
+                total: "totalpages",
+                page: "currpage",
+                records: "totalrecords",
+                repeatitems: false
+            },
+            rowList: [10, 20, 30],
+            pager: pager_selector,
+            pgbuttons: true,	//是否显示翻页按钮
+            altRows: true,
+            multiselect: @PVP.IsShowSelect.ToString().ToLower(),
+            multiboxonly: true,
+
+            loadComplete: function () {
+                var table = this;
+                setTimeout(function () {
+                    styleCheckbox(table);
+
+                    updateActionIcons(table);
+                    updatePagerIcons(table);
+                    enableTooltips(table);
+                }, 0);
+            },
+
+            //修正切换每页显示行数,引起高度变化在IFrame下显示不全的问题的Bug				 Update By Mr.Jun
+            gridComplete: function () {
+                setTimeout("if(parent.onresize){parent.onresize()}", "1");
+            },
+
+            editurl: @{
+				  if(DtQDef.Rows[0]["del_path"] != null && DtQDef.Rows[0]["del_path"].ToString() != "")
+				  {@:"@(DtQDef.Rows[0]["del_path"])"
+            															                        																						  }
+				  else
+				  {@:"/Common/DataList/Delete?query_id=@Html.Raw(PVP.QueryId)"
+				  }
+			},
+            onSelectRow: function (rowid, status) {
+                selId = rowid;
+            },
+        caption: "@PVP.Title",
+        autowidth: true
+    });
+
+    //switch element when editing inline
+    function aceSwitch(cellvalue, options, cell) {
+        setTimeout(function () {
+            $(cell).find('input[type=checkbox]')
+					.wrap('<label class="inline" />')
+				.addClass('ace ace-switch ace-switch-5')
+				.after('<span class="lbl"></span>');
+        }, 0);
+    }
+    //enable datepicker
+    function pickDate(cellvalue, options, cell) {
+        setTimeout(function () {
+            $(cell).find('input[type=text]')
+					.datepicker({ format: 'yyyy-mm-dd', autoclose: true });
+        }, 0);
+    }
+
+    //navButtons
+    jQuery(grid_selector).jqGrid('navGrid', pager_selector,
+		{
+		    //分页(左下角图标)
+		    edit: false,
+		    editicon: 'icon-pencil blue',
+		    add: false,
+		    addicon: 'icon-plus-sign purple',
+		    del: @PVP.IsShowDelete.ToString().ToLower(),
+		    delicon: 'icon-trash red',
+		    search: false,
+		    searchicon: 'icon-search orange',
+		    refresh: true,
+		    refreshicon: 'icon-refresh green',
+		    view: false,
+		    viewicon: 'icon-zoom-in grey'
+		},
+		{
+		    //edit record form
+		    //closeAfterEdit: true,
+		    recreateForm: true,
+		    beforeShowForm: function (e) {
+		        var form = $(e[0]);
+		        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+		        style_edit_form(form);
+		    }
+		},
+		{
+		    //new record form
+		    closeAfterAdd: false,
+		    recreateForm: false,
+		    viewPagerButtons: false,
+		    beforeShowForm: function (e) {
+		        var form = $(e[0]);
+		        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+		        style_edit_form(form);
+		    }
+		},
+		{
+		    //delete record form
+		    recreateForm: true,
+		    beforeShowForm: function (e) {
+		        var form = $(e[0]);
+		        if (form.data('styled')) return false;
+
+		        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+		        style_delete_form(form);
+
+		        form.data('styled', true);
+		    },
+		    onClick: function (e) {
+		        alertBox(1);
+		    }
+		},
+		{
+		    //search form
+		    recreateForm: true,
+		    afterShowSearch: function (e) {
+		        var form = $(e[0]);
+		        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+		        style_search_form(form);
+		    },
+		    afterRedraw: function () {
+		        style_search_filters($(this));
+		    }
+			,
+		    multipleSearch: true
+		},
+		{
+		    //view record form
+		    recreateForm: true,
+		    beforeShowForm: function (e) {
+		        var form = $(e[0]);
+		        form.closest('.ui-jqdialog').find('.ui-jqdialog-title').wrap('<div class="widget-header" />')
+		    }
+		}
+	)
+
+    if ("@PVP.IsShowAdd"=="True")
+    {//右下角添加按钮 by lhx
+        jQuery(grid_selector).jqGrid('navButtonAdd',pager_selector,{caption:"",title:"新增", buttonicon:"icon-plus-sign purple", onClickButton:function(){ LoadingUtils.GoToUrl("@(PVP.AddBtnRedirect)","@PVP.TreeId");}, position: "first", cursor: "pointer"});
+    }
+
+    function style_edit_form(form) {
+        //enable datepicker on "sdate" field and switches for "stock" field
+        form.find('input[name=sdate]').datepicker({ format: 'yyyy-mm-dd', autoclose: true })
+			.end().find('input[name=stock]')
+				  .addClass('ace ace-switch ace-switch-5').wrap('<label class="inline" />').after('<span class="lbl"></span>');
+
+        //update buttons classes
+        var buttons = form.next().find('.EditButton .fm-button');
+        buttons.addClass('btn btn-sm').find('[class*="-icon"]').remove();//ui-icon, s-icon
+        buttons.eq(0).addClass('btn-primary').prepend('<i class="icon-ok"></i>');
+        buttons.eq(1).prepend('<i class="icon-remove"></i>')
+
+        buttons = form.next().find('.navButton a');
+        buttons.find('.ui-icon').remove();
+        buttons.eq(0).append('<i class="icon-chevron-left"></i>');
+        buttons.eq(1).append('<i class="icon-chevron-right"></i>');
+    }
+
+    function style_delete_form(form) {
+        var buttons = form.next().find('.EditButton .fm-button');
+        buttons.addClass('btn btn-sm').find('[class*="-icon"]').remove();//ui-icon, s-icon
+        buttons.eq(0).addClass('btn-danger').prepend('<i class="icon-trash"></i>');
+        buttons.eq(1).prepend('<i class="icon-remove"></i>')
+    }
+
+    function style_search_filters(form) {
+        form.find('.delete-rule').val('X');
+        form.find('.add-rule').addClass('btn btn-xs btn-primary');
+        form.find('.add-group').addClass('btn btn-xs btn-success');
+        form.find('.delete-group').addClass('btn btn-xs btn-danger');
+    }
+    function style_search_form(form) {
+        var dialog = form.closest('.ui-jqdialog');
+        var buttons = dialog.find('.EditTable')
+        buttons.find('.EditButton a[id*="_reset"]').addClass('btn btn-sm btn-info').find('.ui-icon').attr('class', 'icon-retweet');
+        buttons.find('.EditButton a[id*="_query"]').addClass('btn btn-sm btn-inverse').find('.ui-icon').attr('class', 'icon-comment-alt');
+        buttons.find('.EditButton a[id*="_search"]').addClass('btn btn-sm btn-purple').find('.ui-icon').attr('class', 'icon-search');
+    }
+
+    function beforeDeleteCallback(e) {
+        var form = $(e[0]);
+        if (form.data('styled')) return false;
+        //修改删除弹出框的弹出位置
+        $("#delmodgrid-table").css({left:"40%",top:"30%"});
+        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+        style_delete_form(form);
+
+        form.data('styled', true);
+    }
+
+    function beforeEditCallback(e) {
+        var form = $(e[0]);
+        form.closest('.ui-jqdialog').find('.ui-jqdialog-titlebar').wrapInner('<div class="widget-header" />')
+        style_edit_form(form);
+    }
+
+    //it causes some flicker when reloading or navigating grid
+    //it may be possible to have some custom formatter to do this as the grid is being created to prevent this
+    //or go back to default browser checkbox styles for the grid
+    function styleCheckbox(table) {
+        /**
+			$(table).find('input:checkbox').addClass('ace')
+			.wrap('<label />')
+			.after('<span class="lbl align-top" />')
+
+
+			$('.ui-jqgrid-labels th[id*="_cb"]:first-child')
+			.find('input.cbox[type=checkbox]').addClass('ace')
+			.wrap('<label />').after('<span class="lbl align-top" />');
+		*/
+    }
+
+    //unlike navButtons icons, action icons in rows seem to be hard-coded
+    //you can change them like this in here if you want
+    function updateActionIcons(table) {
+        /**
+		var replacement =
+		{
+			'ui-icon-pencil' : 'icon-pencil blue',
+			'ui-icon-trash' : 'icon-trash red',
+			'ui-icon-disk' : 'icon-ok green',
+			'ui-icon-cancel' : 'icon-remove red'
+		};
+		$(table).find('.ui-pg-div span.ui-icon').each(function(){
+			var icon = $(this);
+			var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+			if($class in replacement) icon.attr('class', 'ui-icon '+replacement[$class]);
+		})
+		*/
+    }
+
+    //replace icons with FontAwesome icons like above
+    function updatePagerIcons(table) {
+        //上一页，下一页 第一页，最后一页
+        var replacement =
+		{
+		    'ui-icon-seek-first': 'icon-double-angle-left bigger-140',
+		    'ui-icon-seek-prev': 'icon-angle-left bigger-140',
+		    'ui-icon-seek-next': 'icon-angle-right bigger-140',
+		    'ui-icon-seek-end': 'icon-double-angle-right bigger-140'
+		};
+        $('.ui-pg-table:not(.navtable) > tbody > tr > .ui-pg-button > .ui-icon').each(function () {
+            var icon = $(this);
+            var $class = $.trim(icon.attr('class').replace('ui-icon', ''));
+
+            if ($class in replacement) icon.attr('class', 'ui-icon ' + replacement[$class]);
+        })
+    }
+
+    function enableTooltips(table) {
+        $('.navtable .ui-pg-button').tooltip({ container: 'body' });
+        $(table).find('.ui-pg-div').tooltip({ container: 'body' });
+    }
+
+    //var selr = jQuery(grid_selector).jqGrid('getGridParam','selrow');
+    });
+</script>
+
+<script type="text/javascript">
+    var $path_base = "/";//this will be used in gritter alerts containing images
+</script>

@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：余穗海
+** 时间：2014-07-25 10:21:53
+** 描述：field(field)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="Field" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="Field" type="Comit.XJPublicServicePlatform.Web.Domain.Common.Field, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="FieldCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="Field.AddField"/>
+      		<flushOnExecute statement="Field.UpdateField"/>
+      		<flushOnExecute statement="Field.DeleteField"/>
+      		<flushOnExecute statement="Field.DeleteFields"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="FieldResult" class="Field">
+			<result property="Id" column="id"/>    
+			<result property="QueryId" column="query_id"/>    
+			<result property="FieldCode" column="field_code"/>    
+			<result property="FieldName" column="field_name"/>    
+			<result property="IsKey" column="is_key"/>    
+			<result property="IsSelitem" column="is_selItem"/>    
+			<result property="IsShow" column="is_show"/>    
+			<result property="Width" column="width"/>    
+			<result property="Href" column="href"/>    
+			<result property="DataType" column="data_type"/>    
+			<result property="Formatter" column="formatter"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddField" parameterClass="Field">
+           INSERT INTO field (query_id,field_code,field_name,is_key,is_selItem,is_show,width,href,data_type,formatter) 
+           VALUES ( #QueryId#,#FieldCode#,#FieldName#,#IsKey#,#IsSelitem#,#IsShow#,#Width#,#Href#,#DataType#,#Formatter#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                    <selectKey resultClass="int" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateField" parameterClass="Field">
+           UPDATE field SET query_id = #QueryId#,field_code = #FieldCode#,field_name = #FieldName#,is_key = #IsKey#,is_selItem = #IsSelitem#,is_show = #IsShow#,width = #Width#,href = #Href#,data_type = #DataType#,formatter = #Formatter#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllFieldBySql" resultMap="FieldResult" parameterClass="string"  cacheModel="FieldCache">
+           SELECT id,query_id,field_code,field_name,is_key,is_selItem,is_show,width,href,data_type,formatter  
+           FROM field
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetFields" resultMap="FieldResult" parameterClass="Field" cacheModel="FieldCache">
+      		select field.id,field.query_id,field.field_code,field.field_name,field.is_key,field.is_selItem,field.is_show,field.width,field.href,field.data_type,field.formatter
+      		from field
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindFields" resultMap="FieldResult" parameterClass="Hashtable" cacheModel="FieldCache">
+        	select field.id,field.query_id,field.field_code,field.field_name,field.is_key,field.is_selItem,field.is_show,field.width,field.href,field.data_type,field.formatter
+        	from field
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+                (1=1 and field.QueryId=#Extends[].query_id#)
+              </iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteField" parameterClass="Field">
+      		UPDATE field  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteFieldBySql" parameterClass="string">
+           UPDATE field  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteFields" parameterClass="List">
+      		UPDATE field  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						field.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="IsKey">
+					<isGreaterEqual property="IsKey" compareValue="0" prepend="and">
+						field.is_key=#IsKey#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="IsSelitem">
+					<isGreaterEqual property="IsSelitem" compareValue="0" prepend="and">
+						field.is_selItem=#IsSelitem#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="IsShow">
+					<isGreaterEqual property="IsShow" compareValue="0" prepend="and">
+						field.is_show=#IsShow#
+					</isGreaterEqual>
+				</isNotNull>		
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						field.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="QueryId" prepend="and">
+					UPPER(field.query_id)=UPPER(#QueryId#)
+				</isNotEmpty>	
+				<isNotEmpty property="FieldCode" prepend="and">
+					UPPER(field.field_code)=UPPER(#FieldCode#)
+				</isNotEmpty>	
+				<isNotEmpty property="FieldName" prepend="and">
+					UPPER(field.field_name)=UPPER(#FieldName#)
+				</isNotEmpty>	
+				<isNotNull property="IsKey">
+					<isGreaterEqual property="IsKey" compareValue="0" prepend="and">
+						field.is_key=#IsKey#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="IsSelitem">
+					<isGreaterEqual property="IsSelitem" compareValue="0" prepend="and">
+						field.is_selItem=#IsSelitem#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="IsShow">
+					<isGreaterEqual property="IsShow" compareValue="0" prepend="and">
+						field.is_show=#IsShow#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="Width" prepend="and">
+					UPPER(field.width)=UPPER(#Width#)
+				</isNotEmpty>	
+				<isNotEmpty property="Href" prepend="and">
+					UPPER(field.href)=UPPER(#Href#)
+				</isNotEmpty>	
+				<isNotEmpty property="DataType" prepend="and">
+					UPPER(field.data_type)=UPPER(#DataType#)
+				</isNotEmpty>	
+				<isNotEmpty property="Formatter" prepend="and">
+					UPPER(field.formatter)=UPPER(#Formatter#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

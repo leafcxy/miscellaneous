@@ -1,0 +1,102 @@
+if exists (select 1
+            from  sysobjects
+           where  id = object_id('t_user')
+            and   type = 'U')
+   drop table t_user
+go
+
+create table t_user (
+   id                   int                  identity,
+   position             int                  null default 0,
+   alias                varchar(127)         null default '',
+   password             varchar(127)         null default '',
+   name                 varchar(127)         null default '',
+   nickname             varchar(127)         null default '',
+   organization         int                  null default 0,
+   post                 varchar(127)         null default '',
+   certificate_no       varchar(127)         null default '',
+   certificate_class    varchar(127)         null default '0',
+   certificate_date     datetime             null default 'SYSDATE',
+   valid_date           datetime             null default 'SYSDATE',
+   status               int                  null default 0,
+   description          varchar(127)         null default '',
+   constraint pk_t_user primary key nonclustered (id)
+)
+go
+
+declare @cmtt_user varchar(128)
+select @cmtt_user = user_name()
+execute sp_addextendedproperty 'MS_Description', 
+   '用户',
+   'user', @cmtt_user, 'table', 't_user'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '标识',
+   'user', '', 'table', 't_user', 'column', 'id'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '位置',
+   'user', '', 'table', 't_user', 'column', 'position'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '别名',
+   'user', '', 'table', 't_user', 'column', 'alias'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '密码',
+   'user', '', 'table', 't_user', 'column', 'password'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '姓名',
+   'user', '', 'table', 't_user', 'column', 'name'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '昵称',
+   'user', '', 'table', 't_user', 'column', 'nickname'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '组织',
+   'user', '', 'table', 't_user', 'column', 'organization'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '职务',
+   'user', '', 'table', 't_user', 'column', 'post'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '执法证号',
+   'user', '', 'table', 't_user', 'column', 'certificate_no'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '执法证执法类别',
+   'user', '', 'table', 't_user', 'column', 'certificate_class'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '执法证执法日期',
+   'user', '', 'table', 't_user', 'column', 'certificate_date'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '执法证有效日期',
+   'user', '', 'table', 't_user', 'column', 'valid_date'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '状态，0：停用，1：启用',
+   'user', '', 'table', 't_user', 'column', 'status'
+go
+
+execute sp_addextendedproperty 'MS_Description', 
+   '描述',
+   'user', '', 'table', 't_user', 'column', 'description'
+go

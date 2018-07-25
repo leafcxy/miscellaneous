@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<sqlMap namespace="Membership" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!--别名-->
+  <alias>
+    <typeAlias alias="Membership" type="LeaveWord.Domain.user.Membership, LeaveWord.Domain" />
+  </alias>
+  <!--缓存模型-->
+  <cacheModels>
+    <cacheModel id="MembershipCache" implementation="MEMORY">
+      <flushInterval hours="24"/>
+      <flushOnExecute statement="Membership.AddMembership"/>
+      <flushOnExecute statement="Membership.UpdateMembership"/>
+      <flushOnExecute statement="Membership.DeleteMembership"/>
+      <flushOnExecute statement="Membership.DeleteMembership"/>
+      <property name="Type" value="WEAK"/>
+    </cacheModel>
+  </cacheModels>
+  <!--字段映射-->
+  <resultMaps>
+    <resultMap id="MembershipResult" class="Membership">
+      <result property="UserId" column="UserId"/>
+      <result property="CreateDate" column="CreateDate"/>
+      <result property="ConfirmationToken" column="ConfirmationToken"/>
+      <result property="IsConfirmed" column="IsConfirmed"/>
+      <result property="LastPasswordFailureDate" column="LastPasswordFailureDate"/>
+      <result property="PasswordFailuresSinceLastSuccess" column="PasswordFailuresSinceLastSuccess"/>
+      <result property="Password" column="Password"/>
+      <result property="PasswordChangedDate" column="PasswordChangedDate"/>
+      <result property="PasswordSalt" column="PasswordSalt"/>
+      <result property="PasswordVerificationToken" column="PasswordVerificationToken"/>
+      <result property="PasswordVerificationTokenExpirationDate" column="PasswordVerificationTokenExpirationDate"/>
+    </resultMap>
+  </resultMaps>
+  <statements>
+    <!--新增-->
+    <insert id="AddMembership" parameterClass="Membership">
+      INSERT INTO webpages_Membership (CreateDate,ConfirmationToken,IsConfirmed,LastPasswordFailureDate,PasswordFailuresSinceLastSuccess,Password,PasswordChangedDate,PasswordSalt,PasswordVerificationToken,PasswordVerificationTokenExpirationDate)
+      VALUES (#CreateDate#,#ConfirmationToken#,#IsConfirmed#,#LastPasswordFailureDate#,#PasswordFailuresSinceLastSuccess#,#Password#,#PasswordChangedDate#,#PasswordSalt#,#PasswordVerificationToken#,#PasswordVerificationTokenExpirationDate#)
+
+      <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+      <selectKey resultClass="int" type="post" property="UserId">
+        SELECT @@IDENTITY AS value
+      </selectKey>
+
+    </insert>
+    <!--修改-->
+    <update id="UpdateMembership" parameterClass="Membership">
+      UPDATE webpages_Membership SET CreateDate = #CreateDate#,ConfirmationToken = #ConfirmationToken#,IsConfirmed = #IsConfirmed#,LastPasswordFailureDate = #LastPasswordFailureDate#,PasswordFailuresSinceLastSuccess = #PasswordFailuresSinceLastSuccess#,Password = #Password#,PasswordChangedDate = #PasswordChangedDate#,PasswordSalt = #PasswordSalt#,PasswordVerificationToken = #PasswordVerificationToken#,PasswordVerificationTokenExpirationDate = #PasswordVerificationTokenExpirationDate#
+      WHERE UserId = #UserId#
+    </update>
+    <!--根据条件语句whereSql获取所有对象-->
+    <select id="GetAllMembershipBySql" resultMap="MembershipResult" parameterClass="string"  cacheModel="MembershipCache">
+      SELECT UserId,CreateDate,ConfirmationToken,IsConfirmed,LastPasswordFailureDate,PasswordFailuresSinceLastSuccess,Password,PasswordChangedDate,PasswordSalt,PasswordVerificationToken,PasswordVerificationTokenExpirationDate
+      FROM webpages_Membership
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="GetMemberships" resultMap="MembershipResult" parameterClass="Membership" cacheModel="MembershipCache">
+      select UserId,CreateDate,ConfirmationToken,IsConfirmed,LastPasswordFailureDate,PasswordFailuresSinceLastSuccess,Password,PasswordChangedDate,PasswordSalt,PasswordVerificationToken,PasswordVerificationTokenExpirationDate
+      from webpages_Membership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </select>
+    <!--获取数据条数-->
+    <select id="GetMembershipCount" resultClass="int" parameterClass="string">
+      select COUNT(UserId)
+      from webpages_Membership
+      $whereSql$
+    </select>
+    <!--获取多条-->
+    <select id="FindMemberships" resultMap="MembershipResult" parameterClass="Hashtable" cacheModel="MembershipCache">
+      select webpages_Membership.UserId,webpages_Membership.CreateDate,webpages_Membership.ConfirmationToken,webpages_Membership.IsConfirmed,webpages_Membership.LastPasswordFailureDate,webpages_Membership.PasswordFailuresSinceLastSuccess,webpages_Membership.Password,webpages_Membership.PasswordChangedDate,webpages_Membership.PasswordSalt,webpages_Membership.PasswordVerificationToken,webpages_Membership.PasswordVerificationTokenExpirationDate
+      from webpages_Membership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+      <isNotEmpty property="Extends" prepend="and">
+        <iterate property="Extends" conjunction="or" open="(" close=")">
+          (1=1 and webpages_Membership.UserId=#Extends[].UserId#)
+        </iterate>
+      </isNotEmpty>
+    </select>
+    <!--删除-->
+    <delete id="DeleteMembership" parameterClass="Membership">
+      DELETE FROM webpages_Membership
+      where 1=1
+      <include refid="WhrClauseEqual" />
+    </delete>
+    <!--根据条件语句whereSql批量删除-->
+    <delete id="BatchDeleteMembershipBySql" parameterClass="string">
+      DELETE FROM webpages_Membership
+      $whereSql$
+    </delete>
+    <!--删除多条-->
+    <delete id="DeleteMemberships" parameterClass="List">
+      DELETE FROM webpages_Membership
+      where 1!=1
+      <iterate prepend="or" conjunction="," open="UserId IN(" close=")">
+        $[]$
+      </iterate>
+    </delete>
+    <!--精确查询条件-->
+    <sql id="WhrClauseEqual">
+      <dynamic>
+        <isNotNull property="UserId">
+          <isGreaterEqual property="UserId" compareValue="0" prepend="and">
+            webpages_Membership.UserId=#UserId#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotEmpty property="CreateDate">
+          <!--同一天-->
+          <isNotEqual property="CreateDate" compareValue="1900-01-01" prepend="and">
+            webpages_Membership.CreateDate = #CreateDate#
+          </isNotEqual>
+        </isNotEmpty>
+        <isNotEmpty property="ConfirmationToken" prepend="and">
+          UPPER(webpages_Membership.ConfirmationToken)=UPPER(#ConfirmationToken#)
+        </isNotEmpty>
+        <isNotEmpty property="IsConfirmed" prepend="and">
+          webpages_Membership.IsConfirmed = #IsConfirmed#
+        </isNotEmpty>
+        <isNotEmpty property="LastPasswordFailureDate">
+          <!--同一天-->
+          <isNotEqual property="LastPasswordFailureDate" compareValue="1900-01-01" prepend="and">
+            webpages_Membership.LastPasswordFailureDate = #LastPasswordFailureDate#
+          </isNotEqual>
+        </isNotEmpty>
+        <isNotNull property="PasswordFailuresSinceLastSuccess">
+          <isGreaterEqual property="PasswordFailuresSinceLastSuccess" compareValue="0" prepend="and">
+            webpages_Membership.PasswordFailuresSinceLastSuccess=#PasswordFailuresSinceLastSuccess#
+          </isGreaterEqual>
+        </isNotNull>
+        <isNotEmpty property="Password" prepend="and">
+          UPPER(webpages_Membership.Password)=UPPER(#Password#)
+        </isNotEmpty>
+        <isNotEmpty property="PasswordChangedDate">
+          <!--同一天-->
+          <isNotEqual property="PasswordChangedDate" compareValue="1900-01-01" prepend="and">
+            webpages_Membership.PasswordChangedDate = #PasswordChangedDate#
+          </isNotEqual>
+        </isNotEmpty>
+        <isNotEmpty property="PasswordSalt" prepend="and">
+          UPPER(webpages_Membership.PasswordSalt)=UPPER(#PasswordSalt#)
+        </isNotEmpty>
+        <isNotEmpty property="PasswordVerificationToken" prepend="and">
+          UPPER(webpages_Membership.PasswordVerificationToken)=UPPER(#PasswordVerificationToken#)
+        </isNotEmpty>
+        <isNotEmpty property="PasswordVerificationTokenExpirationDate">
+          <!--同一天-->
+          <isNotEqual property="PasswordVerificationTokenExpirationDate" compareValue="1900-01-01" prepend="and">
+            webpages_Membership.PasswordVerificationTokenExpirationDate = #PasswordVerificationTokenExpirationDate#
+          </isNotEqual>
+        </isNotEmpty>
+      </dynamic>
+    </sql>
+  </statements>
+</sqlMap>

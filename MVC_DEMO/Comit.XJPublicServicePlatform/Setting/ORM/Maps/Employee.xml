@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：张权
+** 时间：2016-05-25 11:49:22
+** 描述：employee(员工信息)表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="Employee" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="Employee" type="Comit.XJPublicServicePlatform.Web.Domain.employee.Employee, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="EmployeeCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="Employee.AddEmployee"/>
+      		<flushOnExecute statement="Employee.UpdateEmployee"/>
+      		<flushOnExecute statement="Employee.DeleteEmployee"/>
+      		<flushOnExecute statement="Employee.DeleteEmployees"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="EmployeeResult" class="Employee">
+			<result property="Id" column="id"/>    
+			<result property="Name" column="name"/>    
+			<result property="Idcard" column="idcard"/>    
+			<result property="Age" column="age"/>    
+			<result property="Sex" column="sex"/>    
+			<result property="Mobile" column="mobile"/>    
+			<result property="Address" column="address"/>    
+			<result property="Height" column="height"/>    
+			<result property="National" column="national"/>    
+			<result property="Birth" column="birth"/>    
+			<result property="Province" column="province"/>    
+			<result property="City" column="city"/>    
+			<result property="HouseholdType" column="household_type"/>    
+			<result property="PoliticalLandscape" column="political_landscape"/>    
+			<result property="Hobbies" column="hobbies"/>    
+			<result property="Remark" column="remark"/>    
+			<result property="State" column="state"/>    
+			<result property="OperatePerson" column="operate_person"/>    
+			<result property="OperateTime" column="operate_time"/>    
+			<result property="OperateType" column="operate_type"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddEmployee" parameterClass="Employee">
+           INSERT INTO employee (name,idcard,age,sex,mobile,address,height,national,birth,province,city,household_type,political_landscape,hobbies,remark,state,operate_person,operate_time,operate_type) 
+           VALUES ( #Name#,#Idcard#,#Age#,#Sex#,#Mobile#,#Address#,#Height#,#National#,#Birth#,#Province#,#City#,#HouseholdType#,#PoliticalLandscape#,#Hobbies#,#Remark#,#State#,#OperatePerson#,#OperateTime#,#OperateType#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                         <selectKey resultClass="int" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateEmployee" parameterClass="Employee">
+           UPDATE employee SET name = #Name#,idcard = #Idcard#,age = #Age#,sex = #Sex#,mobile = #Mobile#,address = #Address#,height = #Height#,national = #National#,birth = #Birth#,province = #Province#,city = #City#,household_type = #HouseholdType#,political_landscape = #PoliticalLandscape#,hobbies = #Hobbies#,remark = #Remark#,state = #State#,operate_person = #OperatePerson#,operate_time = #OperateTime#,operate_type = #OperateType#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllEmployeeBySql" resultMap="EmployeeResult" parameterClass="string"  cacheModel="EmployeeCache">
+           SELECT id,name,idcard,age,sex,mobile,address,height,national,birth,province,city,household_type,political_landscape,hobbies,remark,state,operate_person,operate_time,operate_type  
+           FROM employee
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetEmployees" resultMap="EmployeeResult" parameterClass="Employee" cacheModel="EmployeeCache">
+      		select employee.id,employee.name,employee.idcard,employee.age,employee.sex,employee.mobile,employee.address,employee.height,employee.national,employee.birth,employee.province,employee.city,employee.household_type,employee.political_landscape,employee.hobbies,employee.remark,employee.state,employee.operate_person,employee.operate_time,employee.operate_type
+      		from employee
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取数据条数-->
+      <select id="GetEmployeeCount" resultClass="int" parameterClass="string">
+        select COUNT(id)
+        from employee
+        $whereSql$
+      </select>
+    	<!--获取多条-->
+		<select id="FindEmployees" resultMap="EmployeeResult" parameterClass="Hashtable" cacheModel="EmployeeCache">
+        	select employee.id,employee.name,employee.idcard,employee.age,employee.sex,employee.mobile,employee.address,employee.height,employee.national,employee.birth,employee.province,employee.city,employee.household_type,employee.political_landscape,employee.hobbies,employee.remark,employee.state,employee.operate_person,employee.operate_time,employee.operate_type
+        	from employee
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and employee.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteEmployee" parameterClass="Employee">
+      		UPDATE employee  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteEmployeeBySql" parameterClass="string">
+           UPDATE employee  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteEmployees" parameterClass="List">
+      		UPDATE employee  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						employee.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="Age">
+					<isGreaterEqual property="Age" compareValue="0" prepend="and">
+						employee.age=#Age#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotNull property="Height">
+					<isGreaterEqual property="Height" compareValue="0" prepend="and">
+						employee.height=#Height#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="Birth">
+					<!--同一天-->
+					<isNotEqual property="Birth" compareValue="1900-01-01" prepend="and">
+						employee.birth = #Birth#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotNull property="State">
+					<isGreaterEqual property="State" compareValue="0" prepend="and">
+						employee.state=#State#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						employee.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						employee.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="Name" prepend="and">
+					UPPER(employee.name)=UPPER(#Name#)
+				</isNotEmpty>	
+				<isNotEmpty property="Idcard" prepend="and">
+					UPPER(employee.idcard)=UPPER(#Idcard#)
+				</isNotEmpty>	
+				<isNotNull property="Age">
+					<isGreaterEqual property="Age" compareValue="0" prepend="and">
+						employee.age=#Age#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="Sex" prepend="and">
+					UPPER(employee.sex)=UPPER(#Sex#)
+				</isNotEmpty>	
+				<isNotEmpty property="Mobile" prepend="and">
+					UPPER(employee.mobile)=UPPER(#Mobile#)
+				</isNotEmpty>	
+				<isNotEmpty property="Address" prepend="and">
+					UPPER(employee.address)=UPPER(#Address#)
+				</isNotEmpty>	
+				<isNotNull property="Height">
+					<isGreaterEqual property="Height" compareValue="0" prepend="and">
+						employee.height=#Height#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="National" prepend="and">
+					UPPER(employee.national)=UPPER(#National#)
+				</isNotEmpty>	
+				<isNotEmpty property="Birth">
+					<!--同一天-->
+					<isNotEqual property="Birth" compareValue="1900-01-01" prepend="and">
+						employee.birth = #Birth#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="Province" prepend="and">
+					UPPER(employee.province)=UPPER(#Province#)
+				</isNotEmpty>	
+				<isNotEmpty property="City" prepend="and">
+					UPPER(employee.city)=UPPER(#City#)
+				</isNotEmpty>	
+				<isNotEmpty property="HouseholdType" prepend="and">
+					UPPER(employee.household_type)=UPPER(#HouseholdType#)
+				</isNotEmpty>	
+				<isNotEmpty property="PoliticalLandscape" prepend="and">
+					UPPER(employee.political_landscape)=UPPER(#PoliticalLandscape#)
+				</isNotEmpty>	
+				<isNotEmpty property="Hobbies" prepend="and">
+					UPPER(employee.hobbies)=UPPER(#Hobbies#)
+				</isNotEmpty>	
+				<isNotEmpty property="Remark" prepend="and">
+					UPPER(employee.remark)=UPPER(#Remark#)
+				</isNotEmpty>	
+				<isNotNull property="State">
+					<isGreaterEqual property="State" compareValue="0" prepend="and">
+						employee.state=#State#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="OperatePerson" prepend="and">
+					UPPER(employee.operate_person)=UPPER(#OperatePerson#)
+				</isNotEmpty>	
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						employee.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateType" prepend="and">
+					UPPER(employee.operate_type)=UPPER(#OperateType#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

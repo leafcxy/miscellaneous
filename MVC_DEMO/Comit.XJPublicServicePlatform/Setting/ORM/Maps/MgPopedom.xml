@@ -1,0 +1,199 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+** 作者：李鸿庭
+** 时间：2014-07-28 19:05:35
+** 描述：mg_popedom(权限管理
+   
+   )表的sqlmap(自动生成 )
+-->
+<sqlMap namespace="MgPopedom" xmlns="http://ibatis.apache.org/mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  	<!--别名-->
+  	<alias>
+    	<typeAlias alias="MgPopedom" type="Comit.XJPublicServicePlatform.Web.Domain.Management.MgPopedom, Comit.XJPublicServicePlatform.Web.Domain" />
+  	</alias>
+	<!--缓存模型-->
+  	<cacheModels>
+    	<cacheModel id="MgPopedomCache" implementation="MEMORY">
+      		<flushInterval hours="24"/>
+      		<flushOnExecute statement="MgPopedom.AddMgPopedom"/>
+      		<flushOnExecute statement="MgPopedom.UpdateMgPopedom"/>
+      		<flushOnExecute statement="MgPopedom.DeleteMgPopedom"/>
+      		<flushOnExecute statement="MgPopedom.DeleteMgPopedoms"/>
+      		<property name="Type" value="WEAK"/>
+  		</cacheModel>
+  	</cacheModels>
+  	<!--字段映射-->
+  	<resultMaps>
+  		<resultMap id="MgPopedomResult" class="MgPopedom">
+			<result property="Id" column="id"/>    
+			<result property="RoleId" column="role_id"/>    
+			<result property="PrivilegeId" column="privilege_id"/>    
+			<result property="PrivilegeName" column="privilege_name"/>    
+			<result property="ParentPrivilegeId" column="parent_privilege_id"/>    
+			<result property="PrivilegeType" column="privilege_type"/>    
+			<result property="PrivilegeFlag" column="privilege_flag"/>    
+			<result property="Remark" column="remark"/>    
+			<result property="SysCode" column="sys_code"/>    
+			<result property="RecordTime" column="record_time"/>    
+			<result property="OperatePerson" column="operate_person"/>    
+			<result property="OperateTime" column="operate_time"/>    
+			<result property="OperateType" column="operate_type"/>    
+			<result property="BackUp1" column="back_up1"/>    
+			<result property="BackUp2" column="back_up2"/>    
+			<result property="BackUp3" column="back_up3"/>    
+			<result property="BackUp4" column="back_up4"/>    
+			<result property="BackUp5" column="back_up5"/>    
+		</resultMap>
+  	</resultMaps>
+  	<statements>
+  		<!--新增-->
+    	<insert id="AddMgPopedom" parameterClass="MgPopedom">
+           INSERT INTO mg_popedom (role_id,privilege_id,privilege_name,parent_privilege_id,privilege_type,privilege_flag,remark,sys_code,record_time,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5) 
+           VALUES ( #RoleId#,#PrivilegeId#,#PrivilegeName#,#ParentPrivilegeId#,#PrivilegeType#,#PrivilegeFlag#,#Remark#,#SysCode#,#RecordTime#,#OperatePerson#,#OperateTime#,#OperateType#,#BackUp1#,#BackUp2#,#BackUp3#,#BackUp4#,#BackUp5#) 
+
+              <!--插入数据之后，model对象的主属性得到自增主键的新值-->
+                    <selectKey resultClass="long" type="post" property="Id">
+             SELECT @@IDENTITY AS value
+           </selectKey>
+
+         </insert>
+    	<!--修改-->
+         <update id="UpdateMgPopedom" parameterClass="MgPopedom">
+           UPDATE mg_popedom SET role_id = #RoleId#,privilege_id = #PrivilegeId#,privilege_name = #PrivilegeName#,parent_privilege_id = #ParentPrivilegeId#,privilege_type = #PrivilegeType#,privilege_flag = #PrivilegeFlag#,remark = #Remark#,sys_code = #SysCode#,record_time = #RecordTime#,operate_person = #OperatePerson#,operate_time = #OperateTime#,operate_type = #OperateType#,back_up1 = #BackUp1#,back_up2 = #BackUp2#,back_up3 = #BackUp3#,back_up4 = #BackUp4#,back_up5 = #BackUp5#  
+           WHERE id = #Id#
+         </update> 
+         <!--根据条件语句whereSql获取所有对象-->
+         <select id="GetAllMgPopedomBySql" resultMap="MgPopedomResult" parameterClass="string">
+           SELECT id,role_id,privilege_id,privilege_name,parent_privilege_id,privilege_type,privilege_flag,remark,sys_code,record_time,operate_person,operate_time,operate_type,back_up1,back_up2,back_up3,back_up4,back_up5  
+           FROM mg_popedom
+           $whereSql$ 
+         </select>
+    	<!--获取多条-->
+    	<select id="GetMgPopedoms" resultMap="MgPopedomResult" parameterClass="MgPopedom" cacheModel="MgPopedomCache">
+      		select mg_popedom.id,mg_popedom.role_id,mg_popedom.privilege_id,mg_popedom.privilege_name,mg_popedom.parent_privilege_id,mg_popedom.privilege_type,mg_popedom.privilege_flag,mg_popedom.remark,mg_popedom.sys_code,mg_popedom.record_time,mg_popedom.operate_person,mg_popedom.operate_time,mg_popedom.operate_type,mg_popedom.back_up1,mg_popedom.back_up2,mg_popedom.back_up3,mg_popedom.back_up4,mg_popedom.back_up5
+      		from mg_popedom
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</select>
+    	<!--获取多条-->
+		<select id="FindMgPopedoms" resultMap="MgPopedomResult" parameterClass="Hashtable" cacheModel="MgPopedomCache">
+        	select mg_popedom.id,mg_popedom.role_id,mg_popedom.privilege_id,mg_popedom.privilege_name,mg_popedom.parent_privilege_id,mg_popedom.privilege_type,mg_popedom.privilege_flag,mg_popedom.remark,mg_popedom.sys_code,mg_popedom.record_time,mg_popedom.operate_person,mg_popedom.operate_time,mg_popedom.operate_type,mg_popedom.back_up1,mg_popedom.back_up2,mg_popedom.back_up3,mg_popedom.back_up4,mg_popedom.back_up5
+        	from mg_popedom
+        	where 1=1
+        	<include refid="WhrClauseEqual" />
+          	<isNotEmpty property="Extends" prepend="and">
+            	<iterate property="Extends" conjunction="or" open="(" close=")">
+              		(1=1 and mg_popedom.ID=#Extends[].Id#)
+            	</iterate>
+          	</isNotEmpty>
+      	</select>
+    	<!--删除-->
+    	<delete id="DeleteMgPopedom" parameterClass="MgPopedom">
+      		UPDATE mg_popedom  SET operate_type = 'Disuse'
+      		where 1=1
+      		<include refid="WhrClauseEqual" />
+    	</delete>
+         <!--根据条件语句whereSql批量删除-->
+         <delete id="BatchDeleteMgPopedomBySql" parameterClass="string">
+           UPDATE mg_popedom  SET operate_type = 'Disuse'
+           $whereSql$
+         </delete>
+    	<!--删除多条-->
+    	<delete id="DeleteMgPopedoms" parameterClass="List">
+      		UPDATE mg_popedom  SET operate_type = 'Disuse'
+      		where 1!=1
+      		<iterate prepend="or" conjunction="," open="ID IN(" close=")">
+        		$[]$
+      		</iterate>
+    	</delete>
+    	<!--模糊查询条件-->
+    	<sql id="WhrClauseLike">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						mg_popedom.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="RecordTime">
+					<!--同一天-->
+					<isNotEqual property="RecordTime" compareValue="1900-01-01" prepend="and">
+						mg_popedom.record_time = #RecordTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						mg_popedom.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+			</dynamic>
+    	</sql>
+    	<!--精确查询条件-->
+    	<sql id="WhrClauseEqual">
+			<dynamic>
+				<isNotNull property="Id">
+					<isGreaterEqual property="Id" compareValue="0" prepend="and">
+						mg_popedom.id=#Id#
+					</isGreaterEqual>
+				</isNotNull>		
+				<isNotEmpty property="RoleId" prepend="and">
+					UPPER(mg_popedom.role_id)=UPPER(#RoleId#)
+				</isNotEmpty>	
+				<isNotEmpty property="PrivilegeId" prepend="and">
+					UPPER(mg_popedom.privilege_id)=UPPER(#PrivilegeId#)
+				</isNotEmpty>	
+				<isNotEmpty property="PrivilegeName" prepend="and">
+					UPPER(mg_popedom.privilege_name)=UPPER(#PrivilegeName#)
+				</isNotEmpty>	
+				<isNotEmpty property="ParentPrivilegeId" prepend="and">
+					UPPER(mg_popedom.parent_privilege_id)=UPPER(#ParentPrivilegeId#)
+				</isNotEmpty>	
+				<isNotEmpty property="PrivilegeType" prepend="and">
+					UPPER(mg_popedom.privilege_type)=UPPER(#PrivilegeType#)
+				</isNotEmpty>	
+				<isNotEmpty property="PrivilegeFlag" prepend="and">
+					UPPER(mg_popedom.privilege_flag)=UPPER(#PrivilegeFlag#)
+				</isNotEmpty>	
+				<isNotEmpty property="Remark" prepend="and">
+					UPPER(mg_popedom.remark)=UPPER(#Remark#)
+				</isNotEmpty>	
+				<isNotEmpty property="SysCode" prepend="and">
+					UPPER(mg_popedom.sys_code)=UPPER(#SysCode#)
+				</isNotEmpty>	
+				<isNotEmpty property="RecordTime">
+					<!--同一天-->
+					<isNotEqual property="RecordTime" compareValue="1900-01-01" prepend="and">
+						mg_popedom.record_time = #RecordTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperatePerson" prepend="and">
+					UPPER(mg_popedom.operate_person)=UPPER(#OperatePerson#)
+				</isNotEmpty>	
+				<isNotEmpty property="OperateTime">
+					<!--同一天-->
+					<isNotEqual property="OperateTime" compareValue="1900-01-01" prepend="and">
+						mg_popedom.operate_time = #OperateTime#
+					</isNotEqual>
+				</isNotEmpty>			
+				<isNotEmpty property="OperateType" prepend="and">
+					UPPER(mg_popedom.operate_type)=UPPER(#OperateType#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp1" prepend="and">
+					UPPER(mg_popedom.back_up1)=UPPER(#BackUp1#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp2" prepend="and">
+					UPPER(mg_popedom.back_up2)=UPPER(#BackUp2#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp3" prepend="and">
+					UPPER(mg_popedom.back_up3)=UPPER(#BackUp3#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp4" prepend="and">
+					UPPER(mg_popedom.back_up4)=UPPER(#BackUp4#)
+				</isNotEmpty>	
+				<isNotEmpty property="BackUp5" prepend="and">
+					UPPER(mg_popedom.back_up5)=UPPER(#BackUp5#)
+				</isNotEmpty>	
+			</dynamic>
+    	</sql>
+  	</statements>
+</sqlMap>

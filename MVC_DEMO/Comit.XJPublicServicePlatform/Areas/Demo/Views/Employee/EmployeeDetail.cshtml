@@ -1,0 +1,307 @@
+﻿@*
+    ** 作者：张权
+    ** 时间：2016-05-27 11:09:18
+    ** employee(员工信息)表的Edit.aspx(自动生成 )
+*@
+@model Comit.XJPublicServicePlatform.Web.Domain.employee.Employee
+@using Microsoft.Security.Application
+
+@{
+    Layout = null;
+}
+@{
+    //表单异步提交参数
+    var formOption = new AjaxOptions
+         {
+             //UpdateTargetId = "results",
+             //InsertionMode = InsertionMode.Replace,
+             HttpMethod = "Post",
+             OnBegin = "beginAct",
+             OnSuccess = "success",
+             OnFailure = "failureInfo",
+             OnComplete = "completeAct",
+             //LoadingElementId = "loading",
+             //LoadingElementDuration = 2000,
+
+         };
+    }
+<!DOCTYPE html>
+<html lang="en" style="background-color: white;">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title</title>
+    <!--[if IE 7]>
+          <link rel="stylesheet" href="@Url.Content("~/Assets/css/font-awesome-ie7.min.css")" />
+        <![endif]-->
+    @Styles.Render("~/Content/css")
+    <!--[if lte IE 8]>
+          <link rel="stylesheet" href="@Url.Content("~/Assets/css/ace-ie.min.css")" />
+        <![endif]-->
+    @Scripts.Render("~/bundles/modernizr")
+    <!--[if lt IE 9]>
+    @Scripts.Render("~/bundles/iecustom")
+        <![endif]-->
+</head>
+<body>
+    @using (Ajax.BeginForm("Operate", "Employee", null, formOption))
+    {
+        <!--页面导航-->
+        @Html.Raw(@ViewBag.StrNavigation)
+        <div class="page-content" style="padding-top:20px">
+            <div class="col-xs-12 col-sm-12">
+                <div class="widget-box">
+                    <div class="widget-header">
+                        <h4>@ViewBag.Title</h4>
+                        <span class="widget-toolbar">
+                            <a href="#" data-action="collapse">
+                                <i class="icon-chevron-up"></i>
+                            </a>
+                            @*是否需要删除按钮，按实际情况来设定
+                            <a href="#" data-action="close">
+                                <i class="icon-remove"></i>
+                            </a>*@
+                        </span>
+                    </div>
+
+                    <div class="widget-body">
+                        <div class="widget-main">
+                            <div class="row">
+                                <div style="border:0;background:transparent;filter:alpha(opacity=0);height:0px" id="validationMessage">
+                                    @Html.ValidationSummary()
+                                </div>
+
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Name)
+
+                                @*姓名 普通输入框*@
+                                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Idcard)
+
+                                @*身份证号码 普通输入框*@
+                                    @Html.TextBoxFor(m => m.Idcard, new { @class = "form-control" })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Age)
+
+                                @*年龄 数据型输入框*@
+                                    @Html.TextBox("imageAge", Model.Age, new { data_val = "true", @onchange = "changeRelateObject('Age',this,'number')", @class = "form-control", Value = Model.Age == Int32.MinValue ? "" : Convert.ToString(Model.Age) })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Sex)
+
+                                @*性别-单选 单选*@
+                                    @*0，1是radio的值，启用、关闭是显示的文字*@
+                                         <div class="form-control">
+                                        @Html.RadioButtonForExtension(m => m.Sex, 1, new { data_val = "true", @class = "ace" }, "男")
+                                        @Html.RadioButtonForExtension(m => m.Sex, 0, new { data_val = "true", @class = "ace" }, "女")
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Mobile)
+
+                                @*手机 普通输入框*@
+                                    @Html.TextBoxFor(m => m.Mobile, new { @class = "form-control" })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Address)
+
+                                @*联系地址 普通输入框*@
+                                    @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Height)
+
+                                @*身高 数据型输入框*@
+                                    @Html.TextBox("imageHeight", Model.Height, new { data_val = "true", @onchange = "changeRelateObject('Height',this,'number')", @class = "form-control", Value = Model.Height == Int32.MinValue ? "" : Convert.ToString(Model.Height) })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.National)
+
+                                @*民族 普通输入框*@
+                                    @Html.TextBoxFor(m => m.National, new { @class = "form-control", data_val = "true" })
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Birth)
+
+                                @*出生年月 日期输入框*@
+                                    @Html.TextBoxExtension("imageBirth", Model.Birth, new { data_val = "true", @class = "form-control date-picker", @onchange = "changeRelateObject('Birth',this,'date')", Value = Model.Birth == new DateTime(1900, 1, 1, 0, 0, 0) ? "" : String.Format("{0:d}", Model.Birth) }, "data-date-format=\"yyyy-mm-dd\"")
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.Province)
+
+                                @*出生地省-下拉 下拉框*@
+                                    <div style="height:34px">
+                                        @*ViewBag.Province后台组出来的List<SelectListItem>*@
+                                        @Html.DropDownListFor(m => m.Province, ViewBag.Province as List<SelectListItem>, "---请选择---", new { @class = "width-60 js-example-placeholder-single tag-input-style"})
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.City)
+
+                                @*出生地市-下拉 下拉框*@
+                                    <div style="height:34px">
+                                        @*ViewBag.City后台组出来的List<SelectListItem>*@
+                                        @Html.DropDownListFor(m => m.City, ViewBag.City as List<SelectListItem>, "---请选择---", new { @class = "width-60 js-example-placeholder-single tag-input-style"})
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6 col-lg-4 div-padding">
+                                    @Html.LabelFor(m => m.HouseholdType)
+
+                                @*户籍类型-单选 单选*@
+                                    @*0，1是radio的值，启用、关闭是显示的文字*@
+                                         <div class="form-control">
+                                        @Html.RadioButtonForExtension(m => m.HouseholdType, 1, new { data_val = "true", @class = "ace" }, "农村")
+                                        @Html.RadioButtonForExtension(m => m.HouseholdType, 0, new { data_val = "true", @class = "ace" }, "城镇")
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-xs-12 div-padding">
+                                    @Html.LabelFor(m => m.Remark)
+
+                                @*备注 多行输入框*@
+                                    @Html.TextAreaFor(m => m.Remark, 3, 20, new { @class = "limited form-control", maxlength = "50" })
+                                </div>
+
+
+
+                                @*状态 普通隐藏控件*@
+                                @Html.HiddenFor(m => m.State)
+
+
+
+                                @*操作人 普通隐藏控件*@
+                                @Html.HiddenFor(m => m.OperatePerson)
+
+
+
+                                @*操作时间 日期隐藏控件*@
+                                @Html.HiddenFor(m => m.OperateTime)
+
+                                <br />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            @*<div id="results">
+                </div>*@
+            @*操作按钮*@
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" id="btnAdd" name="button" value="新增" class="btn btn-info" onclick="setTimeout('validationInfo()',100)" />
+                    <input type="submit" id="btnUpdate" name="button" value="修改" class="btn btn-default" onclick="setTimeout('validationInfo()',100)"  />
+                    <input type="button" id="btnDelete" value="删除" class="btn btn-default" onclick="delConfirm()" /> 
+                    <input type="button" id="btnReturn" value="返回" class="btn btn-info" onclick="javascript:window.location.href='@ViewBag.ReturnBackUrl'" />
+                </div>
+            </div>
+            <div id="hideObject" style="display:none">
+                                @*操作类型 普通隐藏控件*@
+                                @Html.TextBoxFor(m => m.Id, new { @onfocus = "changeFocus('imageId')", style = "border:0;background:transparent;filter:alpha(opacity=0);height:0px" })
+                                @*操作类型 普通隐藏控件*@
+                                @Html.TextBoxFor(m => m.Age, new { @onfocus = "changeFocus('imageAge')", style = "border:0;background:transparent;filter:alpha(opacity=0);height:0px" })
+                                @*操作类型 普通隐藏控件*@
+                                @Html.TextBoxFor(m => m.Height, new { @onfocus = "changeFocus('imageHeight')", style = "border:0;background:transparent;filter:alpha(opacity=0);height:0px" })
+                                @*操作类型 日期隐藏控件*@
+                               @Html.TextBoxForExtension(m => m.Birth, new { @class = "date-picker", Value =String.Format("{0:d}", Model.Birth), @onfocus = "changeFocus('imageBirth')", style= "border:0;background:transparent;filter:alpha(opacity=0);height:0px" }, "data-date-format=\"yyyy-mm-dd\"")
+                @Html.Hidden("formHeight")             
+
+            </div>
+            @*保存页面隐藏事件*@
+            <div style="display:none"></div>
+            <!--此处为撑开页面的作用-->
+           <div style="clear:both;"></div>
+        </div><!-- /.page-content -->
+    }
+
+</body>
+
+</html>
+<!-- basic scripts -->
+<!--[if !IE]> -->
+
+<script type="text/javascript">
+    window.jQuery || document.write("<script src='@Url.Content("~/Assets/js/jquery-2.0.3.min.js")'>" + "<" + "/script>");
+</script>
+
+<!-- <![endif]-->
+<!--[if IE]>
+<script type="text/javascript">
+ window.jQuery || document.write("<script src='@Url.Content("~/Assets/js/jquery-1.10.2.min.js")"'>"+"<"+"/script>");
+</script>
+<![endif]-->
+
+<script type="text/javascript">
+    if ("ontouchend" in document) document.write("<script src='@Url.Content("~/Assets/js/jquery.mobile.custom.min.js")'>" + "<" + "/script>");
+</script>
+
+<!-- page specific plugin scripts -->
+<!--[if lte IE 8]>
+  <script src="@Url.Content("~/Assets/js/excanvas.min.js")"></script>
+<![endif]-->
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/bootstrap")
+@Scripts.Render("~/bundles/jqueryval")
+@Scripts.Render("~/bundles/unobtrusive")
+
+<script src="@Url.Content("~/Assets/js/bootstrap.min.js")"></script>
+<script src="@Url.Content("~/Assets/js/typeahead-bs2.min.js")"></script>
+
+@*页面js*@
+<script>
+    $(function () {
+        //页面按钮控制方法
+        pageControl("@Model.OperateType","@ViewBag.AddType","@ViewBag.DelType");
+
+        //日期控件
+        $('.date-picker').datepicker({ autoclose: true }).next().on(ace.click_event, function () {
+            $(this).prev().focus();
+        });
+        //文本框输入格式
+        $('.input-mask-phone').mask('(999) 999-9999');
+        //多选框
+        $(".js-example-placeholder-single").select2();
+        //提示框
+        $('[data-rel=tooltip]').tooltip({ container: 'body' });
+        //多行输入框
+        $('textarea[class*=autosize]').autosize({ append: "\n" });
+        $('textarea.limited').inputlimiter({
+            remText: '%n character%s remaining...',
+            limitText: 'max allowed : %n.'
+        });
+     });       
+    //子页面控制父页面iframe自适应高度
+    function resizeMain(height) {
+        //现控件需要动态增加的高度
+        var oldformHeight = $("#formHeight").val();
+        //上一个控件动态增加的高度，需减去
+        var formHeight = $("body").find("form").height();
+        //动态更改页面高度
+        $("body").find("form").height(formHeight + height - oldformHeight)
+        //父页面ifram自适应高度
+        setTimeout("$(top).resize()", "100");
+        //保存此次动态适应的高度
+        $("#formHeight").val(height);
+    }    
+</script>

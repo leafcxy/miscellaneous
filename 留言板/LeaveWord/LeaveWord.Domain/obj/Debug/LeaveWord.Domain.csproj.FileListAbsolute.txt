@@ -1,0 +1,17 @@
+C:\Users\Administrator\Desktop\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.pdb
+C:\Users\Administrator\Desktop\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.pdb
+C:\Users\Administrator\Desktop\1115夜\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\1115夜\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.pdb
+C:\Users\Administrator\Desktop\1115夜\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\1115夜\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.pdb
+C:\Users\Administrator\Desktop\1116夜\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\1116夜\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.pdb
+C:\Users\Administrator\Desktop\1116夜\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.dll
+C:\Users\Administrator\Desktop\1116夜\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.pdb
+C:\Users\chenxy\Desktop\1117\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.dll
+C:\Users\chenxy\Desktop\1117\LeaveWord\LeaveWord.Domain\bin\Debug\LeaveWord.Domain.pdb
+C:\Users\chenxy\Desktop\1117\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.csprojResolveAssemblyReference.cache
+C:\Users\chenxy\Desktop\1117\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.dll
+C:\Users\chenxy\Desktop\1117\LeaveWord\LeaveWord.Domain\obj\Debug\LeaveWord.Domain.pdb

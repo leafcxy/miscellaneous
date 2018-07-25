@@ -1,0 +1,11 @@
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Comit.XJPublicServicePlatform.Web.Domain.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Comit.XJPublicServicePlatform.Web.Domain.pdb
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Comit.XJPublicServicePlatform.Web.Common.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Newtonsoft.Json.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\GetuiServerApiSDK.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Google.ProtocolBuffers.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\log4net.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\bin\Debug\Comit.XJPublicServicePlatform.Web.Common.pdb
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\obj\Debug\Comit.XJPublicServicePlatform.Web.Domain.csprojResolveAssemblyReference.cache
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\obj\Debug\Comit.XJPublicServicePlatform.Web.Domain.dll
+E:\TencentQQ\1171748309\FileRecv\MVC_DEMO\Comit.XJPublicServicePlatform.Web.Domain\obj\Debug\Comit.XJPublicServicePlatform.Web.Domain.pdb
